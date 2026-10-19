@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="nn" data-title="bx.title">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Box generator</title>
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/box.css">
+<script src="assets/site.js"></script>
+</head>
+<body>
+<header id="site-header"></header>
+<main>
+<div class="wrap">
+  <h1 data-i18n="bx.h1"></h1>
+  <p class="sub" data-i18n="bx.sub"></p>
+
+  <div class="card essence">
+    <h2 data-i18n="bx.ess_h"></h2>
+    <ol>
+      <li data-i18n="bx.e1"></li>
+      <li data-i18n="bx.e2"></li>
+      <li data-i18n="bx.e3"></li>
+      <li data-i18n="bx.e4"></li>
+      <li data-i18n="bx.e5"></li>
+    </ol>
+  </div>
+
+  <div class="grid">
+    <div>
+      <div class="card" id="stage"><canvas id="cv"></canvas><div class="badge" id="badge"></div><div class="redbadge" id="redbadge"></div></div>
+
+      <div class="card">
+        <h2 data-i18n="bx.grid_h"></h2>
+        <div id="gridsvg"></div>
+        <div class="small" id="gridnote" style="margin-top:6px"></div>
+      </div>
+
+      <div class="card">
+        <h2 data-i18n="bx.flip_h"></h2>
+        <div class="chk"><input type="checkbox" id="flip"><label for="flip" data-i18n="bx.flip_l"></label></div>
+        <div id="flipmsg"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2 data-i18n="bx.step_h"></h2>
+        <div class="ctrl">
+          <button id="prev" data-i18n="bx.prev"></button>
+          <button id="next" class="on" data-i18n="bx.next"></button>
+          <button id="play"></button>
+          <button id="restart" data-i18n="bx.restart"></button>
+          <button id="back10">-10</button><button id="fwd10">+10</button><button id="fwd100">+100</button>
+        </div>
+        <div class="row"><label for="I" data-i18n="bx.panel_i"></label><input id="I" type="range" min="0" max="31" step="1" value="0"><output id="Io"></output></div>
+        <div class="small" data-i18n="bx.jump"></div>
+        <div class="chips" id="chips"></div>
+        <div class="vars" id="vars"></div>
+        <div class="code" id="code"></div>
+        <p class="legendnote" data-i18n="bx.legend"></p>
+      </div>
+
+      <div class="card">
+        <h2 data-i18n="bx.calc_h"></h2>
+        <div id="calc"></div>
+      </div>
+
+      <div class="card">
+        <h2 data-i18n="bx.store_h"></h2>
+        <div class="small" style="margin-bottom:4px" data-i18n="bx.store_row"></div>
+        <div id="xyz"></div>
+        <div class="small" style="margin:8px 0 4px" data-i18n="bx.store_gdf"></div>
+        <pre class="mono" id="gdf"></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <details id="setup">
+      <summary data-i18n="bx.setup_sum"></summary>
+      <div class="small" style="margin:10px 0 4px" data-i18n="bx.setup_info"></div>
+      <div class="chips" id="persons"></div>
+      <div id="projectCtl" style="display:none">
+        <div class="small" data-i18n="bx.setup_L"></div>
+        <div class="chips" id="nBs"></div>
+        <div class="small" data-i18n="bx.setup_k"></div>
+        <div class="chips" id="ks"></div>
+        <div class="small" data-i18n="bx.setup_pre"></div>
+        <div class="chips"><span class="chip" id="presetMesh" data-i18n="bx.pre_mesh"></span><span class="chip" id="presetLen" data-i18n="bx.pre_len"></span></div>
+      </div>
+      <div id="freeCtl">
+        <div class="row"><label for="L" data-i18n="bx.f_L"></label><input id="L" type="range" min="1" max="10" step="0.5" value="4"><output id="Lo"></output></div>
+        <div class="row"><label for="B" data-i18n="bx.f_B"></label><input id="B" type="range" min="1" max="10" step="0.5" value="2"><output id="Bo"></output></div>
+        <div class="row"><label for="D" data-i18n="bx.f_D"></label><input id="D" type="range" min="0.5" max="5" step="0.5" value="1"><output id="Do"></output></div>
+        <div class="row"><label for="NX">Nx</label><input id="NX" type="range" min="1" max="8" step="1" value="4"><output id="NXo"></output></div>
+        <div class="row"><label for="NY">Ny</label><input id="NY" type="range" min="1" max="6" step="1" value="2"><output id="NYo"></output></div>
+        <div class="row"><label for="NZ">Nz</label><input id="NZ" type="range" min="1" max="4" step="1" value="2"><output id="NZo"></output></div>
+      </div>
+      <div class="infobox" id="caseinfo"></div>
+      <div class="chk"><input type="checkbox" id="ghost" checked><label for="ghost" data-i18n="bx.ghost"></label></div>
+      <div class="small" data-i18n="bx.hints"></div>
+    </details>
+  </div>
+</div>
+</main>
+<footer id="site-footer"></footer>
+<script src="assets/box-generator.js"></script>
+</body>
+</html>
