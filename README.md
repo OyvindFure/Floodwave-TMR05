@@ -6,9 +6,11 @@ Statisk nettstad utan bygging. Opne `index.html` i nettlesaren, eller publiser m
 
 - `index.html`: forside med kort for kvar visualisering
 - `box-generator.html`: box generator steg for steg
+- `overview.html`: oversikt over korleis WAMIT-oppsettet køyrer, frå config.py til rapport
 - `assets/site.js`: meny, språkval (NO/EN), lys/mørk modus og forsidekort
 - `assets/site.css`: felles stil
 - `assets/box-generator.js` og `assets/box.css`: alt som høyrer til box generator-sida
+- `assets/overview.js` og `assets/overview.css`: alt som høyrer til oversiktssida
 
 ## Leggje til ei ny visualisering
 
