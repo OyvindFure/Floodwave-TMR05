@@ -16,7 +16,7 @@ no:{
  "ov.prev":"◀ Førre steg","ov.next":"Neste steg ▶",
  "who.you":"Du gjer det sjølv","who.py":"Python lagar filer","who.wamit":"WAMIT reknar","who.plot":"Plott og analyse",
  "g.setup":"Oppsett","g.mesh":"Studie 1: mesh","g.len":"Studie 2: lengd","g.main":"Hovudstudie",
- "d.who":"Kven","d.file":"Fil","d.what":"Kva skjer","d.in":"Inn","d.out":"Ut","d.ex":"Med dine tal",
+ "d.who":"Kven","d.file":"Fil","d.what":"Steg for steg","d.in":"Inn","d.out":"Ut","d.ex":"Med dine tal",
  "n1.t":"Sett B i config.py","n2.t":"Lag mesh study-mapper","n3.t":"Køyr WAMIT i kvar mappe","n4.t":"Plott og vel k",
  "n5.t":"Lag length study-mapper","n6.t":"Køyr WAMIT, plott og vel lengd","n7.t":"Lag main_study (kopi)","n8.t":"Siste plott og rapport",
  "n1.w":"Du endrar B til ditt eige tal, og WAMIT-stiane til der WAMIT ligg på din PC. D = B/4 og frekvensområdet er likt for alle. Alle andre skript les verdiane herifrå.",
@@ -26,17 +26,32 @@ no:{
  "n5.w":"For kvar n i LENGTH_MULTIPLES lagar skriptet ei case-mappe med lengd L = n·B, med meshtettleiken du valde (k = LENGTH_STUDY_MESH_K). L = 1B blir hoppa over, fordi den same køyringa alt finst i mesh_study.",
  "n6.w":"Du køyrer run.bat i kvar lengdemappe og køyrer plottskripta på nytt. I figurane ser du kvar resultata slutter å endre seg når skroget blir lengre (3D-effekten forsvinn). Den lengda du vel, skriv du i FINAL_LENGTH_B i config.py.",
  "n7.w":"Hovudstudien er ikkje ei ny WAMIT-køyring. Skriptet kopierer den ferdige case-mappa du valde (FINAL_LENGTH_B ved k = LENGTH_STUDY_MESH_K) til main_study. Mappa må alt ha case.out, case.1 og case.6.",
- "n8.w":"Plottskripta køyrer ein siste gong og lagar hovudfigurane frå main_study: added mass, demping og bølgjehøgd (modul og fase). Figurane går inn i rapporten.",
+ "n8.w":"Plottskripta køyrer ein siste gong og lagar hovudfigurane frå main_study: added mass, demping og bølgjehøgd (modul og fase) i alle 5 probane. Figurane går inn i rapporten.",
  "n1.i":"Tildelt B (4, 6, 8 eller 10 m)","n1.o":"Verdiar som alle skripta hentar med import config",
  "n2.i":"config.py","n2.o":"mesh_study/k…_h…m/, ei mappe per k",
- "n3.i":"case.gdf, case.pot, case.frc, case.cfg og fnames.wam","n3.o":"case.1 (added mass og demping), case.6 (bølgjehøgd) og case.out (logg)",
+ "n3.i":"case.gdf, case.pot, case.frc, case.cfg og fnames.wam","n3.o":"case.1 (added mass og demping), case.6 (bølgjehøgd i 43 feltpunkt) og case.out (logg)",
  "n4.i":"case.1 og case.6 frå mesh_study/","n4.o":"report_plots/mesh_study_*.png og mesh_convergence.png, og eit val av k",
  "n5.i":"config.py med LENGTH_STUDY_MESH_K","n5.o":"length_study/L…B_…m/, ei mappe per lengd",
  "n6.i":"length_study/-mappene","n6.o":"report_plots/length_study_*.png, og eit val av lengd",
  "n7.i":"Ei ferdig køyrd mappe frå mesh_study eller length_study","n7.o":"main_study/",
  "n8.i":"main_study/case.1 og case.6","n8.o":"report_plots/main_study_added_mass_damping.png og main_study_wave_elevation.png",
+ "n1.s":"Du set opp alt som er ditt i éi fil. Dei andre skripta les verdiane herifrå.","n1.l":"Opne `config.py`.|Sett `B` til ditt tal. `D = B/4` blir rekna ut automatisk.|Sett `WAMIT_EXE_PATH` og `WAMIT_USERID_PATH` til der WAMIT ligg på PC-en din.|Sjekk probane (`PROBE_EDGE_DISTANCES_B` og `PROBE_WAVELENGTH_MULTIPLES`). Resten kan stå som det er.",
+ "n2.s":"Python lagar ferdige WAMIT-mapper, ei per k. Ingenting er rekna enno.","n2.l":"Skriptet les `B`, `D`, k-lista og periodane frå `config.py`.|For kvar k reknar det ut talet på paneler: `Nx = round(k·L)`, `Ny = round(k·B)`, `Nz = round(k·D)` med `L = 1B`.|`box_generator` bygger panelmeshet og skriv `case.gdf`.|`wamit_io` skriv `case.pot` (periodar), `case.frc` (probar), `case.cfg`, `fnames.wam` og `run.bat`.|Resultatet er ei mappe per k i `mesh_study/`.",
+ "n3.s":"WAMIT løyser problemet for kvar mappe og skriv resultatfilene.","n3.l":"Du dobbelklikkar `run.bat` i ei case-mappe.|`run.bat` slettar gamle resultatfiler og startar `wamit.exe`.|WAMIT les `fnames.wam`, som peikar på `.cfg`, `.gdf`, `.pot` og `.frc`.|Han løyser radiasjonsproblemet for alle periodane og skriv `case.1`, `case.6` og `case.out`.|Gjenta i kvar mappe. Han er ferdig når ledeteksten kjem tilbake.",
+ "n4.s":"Du finn ut kor fint meshet må vere.","n4.l":"`generate_report_plots.py` les `case.1` i alle mesh-mappene.|Tala blir gjorde dimensjonslause, til dømes `a = A/(B·D·L)`.|`generate_wave_elevation_plots.py` les `case.6` på same måte.|Sjå på `mesh_convergence.png` og finn kvar kurvene sluttar å endre seg.|Vel den grovaste k som er god nok og skriv ho i `LENGTH_STUDY_MESH_K`.",
+ "n5.s":"Python lagar mapper for ulike lengder av sylinderen.","n5.l":"Skriptet les `LENGTH_MULTIPLES` og `LENGTH_STUDY_MESH_K` frå `config.py`.|For kvar n lagar det ei mappe med `L = n·B` og same meshtettleik k.|`L = 1B` blir hoppa over, fordi den køyringa alt finst i `mesh_study`.|Filene blir skrivne som i steg 2, med fleire paneler langs sylinderen.",
+ "n6.s":"Du køyrer lengdene og vel kor lang sylinderen skal vere.","n6.l":"Køyr `run.bat` i kvar lengdemappe.|Køyr plottskripta igjen. Dei les `case.1` og `case.6` òg frå `length_study`.|Sjå på `length_study_*.png`. 2D-verdiane (delt på L) skal slutte å endre seg når L aukar.|Vel lengda og skriv ho i `FINAL_LENGTH_B`.",
+ "n7.s":"Python kopierer den valde køyringa til main_study.","n7.l":"Skriptet finn mappa for `FINAL_LENGTH_B` ved `k = LENGTH_STUDY_MESH_K`.|Det sjekkar at `case.out`, `case.1` og `case.6` finst.|Det kopierer alle filene til `main_study/`. Det blir ikkje køyrt noko ny WAMIT-køyring.",
+ "n8.s":"Siste plott frå main_study, klare til rapporten.","n8.l":"`generate_report_plots.py` les `main_study/case.1` og lagar added mass og demping (a22, b22, a33, b33).|`generate_wave_elevation_plots.py` les `main_study/case.6` og lagar modulus og fase for alle 5 probar.|Figurane blir lagra som png-filer og går inn i rapporten.",
  "ex.params":"Verdiar frå config.py",
- "ex.pr":"Feltpunkt for bølgjehøgd: y = 1.5B og 3B",
+ "ex.pr":"Bølgjeprobar: y frå midten = B/2 + m·B = {a}, {b} og {c} m (1B, 3B og 5B frå kanten), og to probar ved 1λ og 2λ. Sjå kortet om probane.",
+ "ex.rerun":"Har du alt gamle mesh- og lengdekøyringar med to probar? Då er det berre den valde lengda som må køyrast på nytt, med dei nye probane (43 feltpunkt). case.1 og probe 1 (1B frå kanten) er uendra, så dei gamle sensitivitetsstudiane kan brukast. Hovudstudien kopierer det caset.",
+ "ov.pr_h":"Dei 5 bølgjeprobane",
+ "ov.pr_p":"Alle probane ligg i +y-retning frå høgre kant av skroget (y = B/2), midt på sylinderen (x = 0) og i havflata (z = 0). Tre ligg fast: 1B, 3B og 5B frå kanten. To følgjer bølgjelengda λ = π·B/ω̂² (uendeleg vassdjup): 1λ og 2λ frå kanten. Dei endrar seg med frekvensen.",
+ "pr.fixed":"Faste probar",
+ "pr.lam":"Bølgjelengdeprobar (utval av frekvensar)",
+ "pr.h.pt":"Feltpunkt","pr.h.dist":"Avstand frå kanten","pr.h.y":"y frå midten [m]","pr.h.lam":"λ [m]","pr.h.y1":"y for 1λ [m]","pr.h.y2":"y for 2λ [m]",
+ "pr.note":"Alle 5 probane ligg i same case.frc: 3 + 2·20 = 43 feltpunkt. Nummer 1 til 3 er dei faste, så kjem to λ-probar for kvar frekvens, i stigande ω̂. For frekvens nr i (i = 0 for ω̂ = 0.1) tek wave_transfer_lambda feltpunkt 3 + 2i + 1 og 3 + 2i + 2 frå case.6. Éi WAMIT-køyring per case er nok.",
  "ex.meshtbl":"Mappene som blir laga (L = 1B):",
  "ex.lentbl":"Mappene som blir laga (k = {k}):",
  "ex.skip":"L = 1B blir ikkje laga på nytt: mappa {f} i mesh_study blir brukt.",
@@ -53,7 +68,8 @@ no:{
  "f.py":"Laga av Python (før WAMIT)","f.wamit":"Laga av WAMIT (etter run.bat)",
  "f.gdf":"Panelmeshet, altså geometrien til skroget. Laga av box_generator og writetoGDF. Fire hjørnepunkt per panel.",
  "f.pot":"Kva WAMIT skal rekne: periodane, kva rørsler (sway og heave, IMODE) og at det berre er radiasjon (IRAD = 0, IDIFF = -1).",
- "f.frc":"Kva som skal skrivast ut: added mass og demping (IOPTN 1) og bølgjehøgd (IOPTN 6) i to feltpunkt, 1.5B og 3B frå skroget.",
+ "f.frc":"Kva som skal skrivast ut: added mass og demping (IOPTN 1) og bølgjehøgd (IOPTN 6). NFIELD = 43 feltpunkt: dei tre første er dei faste probane (1B, 3B og 5B frå kanten), så to λ-probar for kvar av dei 20 frekvensane i stigande ω̂. Her ser du eit utdrag.",
+ "f.frcmore":"… {rest} feltpunkt til (λ-probar for dei andre frekvensane)",
  "f.cfg":"Innstillingar for løysaren, og stien til WAMIT.",
  "f.fnames":"Peikar på dei fire filene WAMIT les, i denne rekkjefølgja.",
  "f.bat":"Slettar gamle resultat og startar wamit.exe i mappa.",
@@ -78,7 +94,7 @@ en:{
  "ov.prev":"◀ Previous step","ov.next":"Next step ▶",
  "who.you":"You do it yourself","who.py":"Python creates files","who.wamit":"WAMIT computes","who.plot":"Plots and analysis",
  "g.setup":"Setup","g.mesh":"Study 1: mesh","g.len":"Study 2: length","g.main":"Main study",
- "d.who":"Who","d.file":"File","d.what":"What happens","d.in":"In","d.out":"Out","d.ex":"With your numbers",
+ "d.who":"Who","d.file":"File","d.what":"Step by step","d.in":"In","d.out":"Out","d.ex":"With your numbers",
  "n1.t":"Set B in config.py","n2.t":"Create the mesh study folders","n3.t":"Run WAMIT in each folder","n4.t":"Plot and choose k",
  "n5.t":"Create the length study folders","n6.t":"Run WAMIT, plot and choose length","n7.t":"Create main_study (a copy)","n8.t":"Final plots and report",
  "n1.w":"You change B to your own value, and the WAMIT paths to where WAMIT is on your PC. D = B/4 and the frequency range are the same for everyone. All other scripts read their values from here.",
@@ -88,17 +104,32 @@ en:{
  "n5.w":"For each n in LENGTH_MULTIPLES the script creates one case folder with length L = n·B, using the mesh density you chose (k = LENGTH_STUDY_MESH_K). L = 1B is skipped, because the same run already exists in mesh_study.",
  "n6.w":"You run run.bat in each length folder and run the plot scripts again. In the figures you see where the results stop changing as the hull gets longer (the 3D effect disappears). You write the length you choose in FINAL_LENGTH_B in config.py.",
  "n7.w":"The main study is not a new WAMIT run. The script copies the finished case folder you chose (FINAL_LENGTH_B at k = LENGTH_STUDY_MESH_K) into main_study. The folder must already contain case.out, case.1 and case.6.",
- "n8.w":"The plot scripts run one last time and make the main figures from main_study: added mass, damping and wave elevation (modulus and phase). The figures go into the report.",
+ "n8.w":"The plot scripts run one last time and make the main figures from main_study: added mass, damping and wave elevation (modulus and phase) at all 5 probes. The figures go into the report.",
  "n1.i":"Your assigned B (4, 6, 8 or 10 m)","n1.o":"Values every script picks up with import config",
  "n2.i":"config.py","n2.o":"mesh_study/k…_h…m/, one folder per k",
- "n3.i":"case.gdf, case.pot, case.frc, case.cfg and fnames.wam","n3.o":"case.1 (added mass and damping), case.6 (wave elevation) and case.out (log)",
+ "n3.i":"case.gdf, case.pot, case.frc, case.cfg and fnames.wam","n3.o":"case.1 (added mass and damping), case.6 (wave elevation at 43 field points) and case.out (log)",
  "n4.i":"case.1 and case.6 from mesh_study/","n4.o":"report_plots/mesh_study_*.png and mesh_convergence.png, and a choice of k",
  "n5.i":"config.py with LENGTH_STUDY_MESH_K","n5.o":"length_study/L…B_…m/, one folder per length",
  "n6.i":"the length_study/ folders","n6.o":"report_plots/length_study_*.png, and a choice of length",
  "n7.i":"A finished folder from mesh_study or length_study","n7.o":"main_study/",
  "n8.i":"main_study/case.1 and case.6","n8.o":"report_plots/main_study_added_mass_damping.png and main_study_wave_elevation.png",
+ "n1.s":"You set up everything that is yours in one file. The other scripts read their values from here.","n1.l":"Open `config.py`.|Set `B` to your value. `D = B/4` is computed automatically.|Set `WAMIT_EXE_PATH` and `WAMIT_USERID_PATH` to where WAMIT is on your PC.|Check the probes (`PROBE_EDGE_DISTANCES_B` and `PROBE_WAVELENGTH_MULTIPLES`). The rest can stay as it is.",
+ "n2.s":"Python creates ready-made WAMIT folders, one per k. Nothing is computed yet.","n2.l":"The script reads `B`, `D`, the k list and the periods from `config.py`.|For each k it computes the number of panels: `Nx = round(k·L)`, `Ny = round(k·B)`, `Nz = round(k·D)` with `L = 1B`.|`box_generator` builds the panel mesh and writes `case.gdf`.|`wamit_io` writes `case.pot` (periods), `case.frc` (probes), `case.cfg`, `fnames.wam` and `run.bat`.|The result is one folder per k in `mesh_study/`.",
+ "n3.s":"WAMIT solves the problem in each folder and writes the result files.","n3.l":"You double-click `run.bat` in a case folder.|`run.bat` deletes old result files and starts `wamit.exe`.|WAMIT reads `fnames.wam`, which points to `.cfg`, `.gdf`, `.pot` and `.frc`.|It solves the radiation problem for all periods and writes `case.1`, `case.6` and `case.out`.|Repeat in each folder. It is done when the prompt comes back.",
+ "n4.s":"You find out how fine the mesh has to be.","n4.l":"`generate_report_plots.py` reads `case.1` in all the mesh folders.|The numbers are made non-dimensional, for example `a = A/(B·D·L)`.|`generate_wave_elevation_plots.py` reads `case.6` the same way.|Look at `mesh_convergence.png` and find where the curves stop changing.|Choose the coarsest k that is good enough and write it in `LENGTH_STUDY_MESH_K`.",
+ "n5.s":"Python creates folders for different lengths of the cylinder.","n5.l":"The script reads `LENGTH_MULTIPLES` and `LENGTH_STUDY_MESH_K` from `config.py`.|For each n it creates a folder with `L = n·B` and the same mesh density k.|`L = 1B` is skipped, because that run already exists in `mesh_study`.|The files are written as in step 2, with more panels along the cylinder.",
+ "n6.s":"You run the lengths and choose how long the cylinder should be.","n6.l":"Run `run.bat` in each length folder.|Run the plot scripts again. They also read `case.1` and `case.6` from `length_study`.|Look at `length_study_*.png`. The 2D values (divided by L) should stop changing as L grows.|Choose the length and write it in `FINAL_LENGTH_B`.",
+ "n7.s":"Python copies the chosen run into main_study.","n7.l":"The script finds the folder for `FINAL_LENGTH_B` at `k = LENGTH_STUDY_MESH_K`.|It checks that `case.out`, `case.1` and `case.6` exist.|It copies all the files to `main_study/`. No new WAMIT run is made.",
+ "n8.s":"Final plots from main_study, ready for the report.","n8.l":"`generate_report_plots.py` reads `main_study/case.1` and makes added mass and damping (a22, b22, a33, b33).|`generate_wave_elevation_plots.py` reads `main_study/case.6` and makes modulus and phase for all 5 probes.|The figures are saved as png files and go into the report.",
  "ex.params":"Values from config.py",
- "ex.pr":"Field points for wave elevation: y = 1.5B and 3B",
+ "ex.pr":"Wave probes: y from the centre = B/2 + m·B = {a}, {b} and {c} m (1B, 3B and 5B from the edge), and two probes at 1λ and 2λ. See the card about the probes.",
+ "ex.rerun":"Do you already have old mesh and length runs with two probes? Then only the chosen length has to be run again, with the new probes (43 field points). case.1 and probe 1 (1B from the edge) are unchanged, so the old sensitivity studies can be used. The main study copies that case.",
+ "ov.pr_h":"The 5 wave probes",
+ "ov.pr_p":"All probes are in the +y direction from the right edge of the hull (y = B/2), at the middle of the cylinder (x = 0) and at the free surface (z = 0). Three are fixed: 1B, 3B and 5B from the edge. Two follow the wavelength λ = π·B/ω̂² (infinite depth): 1λ and 2λ from the edge. They change with frequency.",
+ "pr.fixed":"Fixed probes",
+ "pr.lam":"Wavelength probes (selected frequencies)",
+ "pr.h.pt":"Field point","pr.h.dist":"Distance from the edge","pr.h.y":"y from the centre [m]","pr.h.lam":"λ [m]","pr.h.y1":"y for 1λ [m]","pr.h.y2":"y for 2λ [m]",
+ "pr.note":"All 5 probes are in the same case.frc: 3 + 2·20 = 43 field points. Numbers 1 to 3 are the fixed ones, then come two λ-probes for each frequency, in ascending ω̂. For frequency number i (i = 0 for ω̂ = 0.1) wave_transfer_lambda takes field points 3 + 2i + 1 and 3 + 2i + 2 from case.6. One WAMIT run per case is enough.",
  "ex.meshtbl":"The folders that are created (L = 1B):",
  "ex.lentbl":"The folders that are created (k = {k}):",
  "ex.skip":"L = 1B is not created again: the folder {f} in mesh_study is used.",
@@ -115,7 +146,8 @@ en:{
  "f.py":"Created by Python (before WAMIT)","f.wamit":"Created by WAMIT (after run.bat)",
  "f.gdf":"The panel mesh, that is the geometry of the hull. Made by box_generator and writetoGDF. Four corner points per panel.",
  "f.pot":"What WAMIT should compute: the periods, which motions (sway and heave, IMODE) and that it is radiation only (IRAD = 0, IDIFF = -1).",
- "f.frc":"What to write out: added mass and damping (IOPTN 1) and wave elevation (IOPTN 6) at two field points, 1.5B and 3B from the hull.",
+ "f.frc":"What to write out: added mass and damping (IOPTN 1) and wave elevation (IOPTN 6). NFIELD = 43 field points: the first three are the fixed probes (1B, 3B and 5B from the edge), then two λ-probes for each of the 20 frequencies in ascending ω̂. An excerpt is shown here.",
+ "f.frcmore":"… {rest} more field points (λ-probes for the other frequencies)",
  "f.cfg":"Solver settings, and the path to WAMIT.",
  "f.fnames":"Points to the four files WAMIT reads, in this order.",
  "f.bat":"Deletes old results and starts wamit.exe in the folder.",
@@ -139,6 +171,13 @@ const f6=x=>(Math.abs(x)<5e-7?0:x).toFixed(6);
 const B=()=>PERSONS[S.p].B, D=()=>B()/4;
 const fmt=n=>String(+(+n).toFixed(3));
 function periods(){ const w=Math.sqrt(2*G/B()); const a=[]; for(let i=1;i<=20;i++){ const oh=Math.round(i*10)/100; a.push({oh, T:2*Math.PI/(oh*w)}); } return a; }
+// alle feltpunkt (y frå midten): 3 faste (frå kanten) + 2 λ-probar per frekvens, same rekkjefølgje som common.probe_locations_m
+function probesY(){
+  const b=B(), e=b/2, a=[];
+  [1,3,5].forEach(m=>a.push(e+m*b));
+  periods().forEach(p=>{ const lam=Math.PI*b/(p.oh*p.oh); [1,2].forEach(n=>a.push(e+n*lam)); });
+  return a;
+}
 function meshName(k){ return "k"+k+"_h"+(1/k).toFixed(3)+"m"; }
 function lenName(n){ return "L"+n+"B_"+(n*B()).toFixed(1)+"m"; }
 function caseParams(type,v){
@@ -182,9 +221,9 @@ function table(head,rows,hl){
 function example(id){
   const b=B(), d=D();
   if(id===1){
-    return '<div class="small">'+T("ex.params")+'</div>'+table(["B","ASPECT_RATIO","D = B/4","OMEGA_HAT","MESH_K_VALUES","LENGTH_MULTIPLES"],
-      [[b,"4.0",fmt(d),"0.1 … 2.0 (0.1)","[1, 2, 4, 6, 8, 10]","[1, 2, 3, 4, 5, 6]"]])+
-      '<div class="small">'+T("ex.pr")+': '+fmt(1.5*b)+' m, '+fmt(3*b)+' m</div>';
+    return '<div class="small">'+T("ex.params")+'</div>'+table(["B","ASPECT_RATIO","D = B/4","OMEGA_HAT","MESH_K_VALUES","LENGTH_MULTIPLES","PROBE_EDGE_DISTANCES_B","PROBE_WAVELENGTH_MULTIPLES"],
+      [[b,"4.0",fmt(d),"0.1 … 2.0 (0.1)","[1, 2, 4, 6, 8, 10]","[1, 2, 3, 4, 5, 6]","[1, 3, 5]","[1, 2]"]])+
+      '<div class="small">'+T("ex.pr",{a:fmt(b/2+b),b:fmt(b/2+3*b),c:fmt(b/2+5*b)})+'</div>';
   }
   if(id===2){
     const rows=KS.map(k=>{ const c=caseParams("mesh",k); return ["mesh_study/"+meshName(k),c.Nx,c.Ny,c.Nz,c.N]; });
@@ -203,19 +242,25 @@ function example(id){
       '<div class="small">'+T("ex.skip",{f:meshName(S.kLS)})+'</div>';
   }
   if(id===6){
-    return '<div class="small">'+T("ex.pickL")+'</div><div class="chips" id="pickL">'+NS.map(n=>'<span class="chip'+(S.finalN===n?' on':'')+'" data-n="'+n+'">L = '+n+'B</span>').join("")+'</div>';
+    return '<div class="small">'+T("ex.pickL")+'</div><div class="chips" id="pickL">'+NS.map(n=>'<span class="chip'+(S.finalN===n?' on':'')+'" data-n="'+n+'">L = '+n+'B</span>').join("")+'</div>'+
+      '<div class="note">'+T("ex.rerun")+'</div>';
   }
   if(id===7){
-    return '<div class="note">'+T("ex.src",{k:S.kLS,n:S.finalN,src:"<code>"+srcFolder()+"</code>"})+'<br>'+T("ex.nowamit")+' '+T("ex.needs")+'</div>';
+    return '<div class="note">'+T("ex.src",{k:S.kLS,n:S.finalN,src:"<code>"+srcFolder()+"</code>"})+'<br>'+T("ex.nowamit")+' '+T("ex.needs")+'</div>'+
+      '<div class="note">'+T("ex.rerun")+'</div>';
   }
   return '<ul style="margin:6px 0;padding-left:18px"><li><code>report_plots/main_study_added_mass_damping.png</code></li><li><code>report_plots/main_study_wave_elevation.png</code></li></ul>';
+}
+function stepsHtml(id){
+  const c=x=>String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/`([^`]+)`/g,"<code>$1</code>");
+  return '<p class="sum">'+c(T("n"+id+".s"))+'</p><ol class="steps">'+T("n"+id+".l").split("|").map(x=>"<li>"+c(x)+"</li>").join("")+'</ol>';
 }
 function renderDetail(){
   const n=NODES[S.node], id=n.id;
   $("detail").innerHTML='<h3>'+id+'. '+T("n"+id+".t")+'</h3>'+
     '<dl><dt>'+T("d.who")+'</dt><dd>'+n.who.map(w=>'<span class="badge '+w+'">'+T("who."+w)+'</span>').join("")+'</dd>'+
     '<dt>'+T("d.file")+'</dt><dd>'+n.files.map(f=>'<code>'+f+'</code>').join(" ")+'</dd>'+
-    '<dt>'+T("d.what")+'</dt><dd>'+T("n"+id+".w")+'</dd>'+
+    '<dt>'+T("d.what")+'</dt><dd>'+stepsHtml(id)+'</dd>'+
     '<dt>'+T("d.in")+'</dt><dd>'+T("n"+id+".i")+'</dd>'+
     '<dt>'+T("d.out")+'</dt><dd>'+T("n"+id+".o")+'</dd></dl>'+
     '<h2 style="margin-top:12px">'+T("d.ex")+'</h2>'+example(id);
@@ -226,9 +271,9 @@ function renderDetail(){
 // ----- innhaldet i dei filene Python skriv, same tekst som wamit_io.py -----
 function fileContent(name,c){
   const b=B(), per=periods();
-  const probes="["+[1.5*b,3.0*b].map(x=>x.toFixed(1)).join(", ")+"]";
+  const ys=probesY();
   if(name==="case.pot") return [
-    c.tag+" -- L="+c.L.toFixed(2)+"m B="+b.toFixed(1)+"m D="+fmt(D())+"m",
+    c.tag+" -- L="+c.L.toFixed(2)+"m B="+b.toFixed(1)+"m D="+D().toFixed(1)+"m",
     " -1. 0. 0. 0. 0.                HBOT, XBODY(1-4)",
     " 0          -1                  IRAD, IDIFF (radiation only, no diffraction)",
     " 0  1  1  0  0  0               IMODE(1-6)  [sway, heave]",
@@ -236,16 +281,14 @@ function fileContent(name,c){
     " "+per.map(p=>p.T.toFixed(6)).join(" ")+"  PER [s]",
     " 0                            NBETA (no diffraction heading needed)"].join("\n");
   if(name==="case.frc") return [
-    c.tag+" -- probes y="+probes,
+    c.tag+" -- "+ys.length+" wave probes",
     " 1    0    0    0    0    1    0    0    0   IOPTN(1-9) [added mass/damping + free-surface elevation]",
     " 0.000000                                    VCG",
     " 1.000000      .0000000      .0000000",
     " .0000000      1.000000      .0000000",
     " .0000000      .0000000      1.000000        XPRDCT",
     " 0                                           NBETAH",
-    " 2                                           NFIELD",
-    " 0.0  "+(1.5*b).toFixed(4)+"  0.0",
-    " 0.0  "+(3.0*b).toFixed(4)+"  0.0"].join("\n");
+    " "+ys.length+"                                           NFIELD"].concat(ys.map(y=>" 0.0  "+y.toFixed(4)+"  0.0")).join("\n");
   if(name==="case.cfg") return [" ipltdat=5"," maxscr=1024"," ISOR=1"," ISOLVE=0"," ISCATT=0"," IQUAD=0"," ILOG=1"," IDIAG=0"," IRR=0"," MONITR=0"," NUMHDR=1",
     " INUMOPT6=1  (separate radiation-mode elevation components in .6 file)",
     " USERID_PATH=C:\\wamitv6  (directory for *.exe, *.dll, and userid.wam)"].join("\n");
@@ -269,17 +312,31 @@ function renderCase(){
   const c=caseParams(S.st.type,S.st.v);
   const all=FILES_PY.concat(FILES_W); const cur=all.find(f=>f[0]===S.file)||FILES_PY[0];
   const btn=(f,col)=>'<button class="f'+(f[0]===cur[0]?' on':'')+'" data-f="'+f[0]+'"><i style="background:'+col+'"></i>'+(f[0].length>20?f[0].slice(0,13)+"…":f[0])+'</button>';
-  const content=fileContent(cur[0],c);
+  let content=fileContent(cur[0],c), frcRest=0;
+  if(cur[0]==="case.frc"){ const ls=content.split("\n"); frcRest=Math.max(0,ls.length-15); content=ls.slice(0,15).join("\n"); }
   let more="";
   if(cur[0]==="case.gdf") more='<div class="small">'+T("f.tag")+'</div>';
   $("folder").innerHTML='<div class="files"><h4>'+c.folder+'/</h4><h4>'+T("f.py")+'</h4>'+FILES_PY.map(f=>btn(f,COLOR.py)).join("")+
     '<h4>'+T("f.wamit")+'</h4>'+FILES_W.map(f=>btn(f,COLOR.wamit)).join("")+'</div>'+
     '<div class="view"><h3>'+cur[0]+'</h3><div class="small">'+T("f.info",{N:c.N,Nx:c.Nx,Ny:c.Ny,Nz:c.Nz,L:fmt(c.L),k:c.k})+'</div>'+
     '<p>'+T(cur[1])+'</p>'+more+(content?'<pre class="mono">'+content.replace(/&/g,"&amp;").replace(/</g,"&lt;")+'</pre>':'')+
-    (cur[0]==="case.gdf"?'<div class="small">'+T("f.more",{rest:c.N*4-4})+'</div>':'')+'</div>';
+    (cur[0]==="case.gdf"?'<div class="small">'+T("f.more",{rest:c.N*4-4})+'</div>':'')+
+    (frcRest?'<div class="small">'+T("f.frcmore",{rest:frcRest})+'</div>':'')+'</div>';
   $("folder").querySelectorAll(".f").forEach(x=>x.addEventListener("click",()=>{ S.file=x.dataset.f; renderCase(); }));
 }
-function renderAll(){ renderPersons(); renderFlow(); renderDetail(); renderCase(); }
+function renderProbes(){
+  const b=B(), e=b/2;
+  const fixed=[1,3,5].map((m,i)=>[i+1, m+"B", fmt(e+m*b)]);
+  const lamRows=[0.1,0.5,1.0,1.5,2.0].map(oh=>{
+    const i=Math.round(oh*10)-1, lam=Math.PI*b/(oh*oh);
+    return [oh.toFixed(1), fmt(lam)+" ("+(lam/b).toFixed(2)+"B)", (3+2*i+1)+", "+(3+2*i+2), fmt(e+lam), fmt(e+2*lam)];
+  });
+  $("probes").innerHTML=
+    '<div class="small">'+T("pr.fixed")+' (B = '+b+' m, y = B/2 + m·B)</div>'+table([T("pr.h.pt"),T("pr.h.dist"),T("pr.h.y")],fixed)+
+    '<div class="small">'+T("pr.lam")+' (y = B/2 + n·λ, λ = π·B/ω̂²)</div>'+table(["ω̂",T("pr.h.lam"),T("pr.h.pt"),T("pr.h.y1"),T("pr.h.y2")],lamRows)+
+    '<div class="note">'+T("pr.note")+'</div>';
+}
+function renderAll(){ renderPersons(); renderFlow(); renderDetail(); renderProbes(); renderCase(); }
 
 $("prev").addEventListener("click",()=>{ if(S.node>0){ S.node--; renderFlow(); renderDetail(); } });
 $("next").addEventListener("click",()=>{ if(S.node<NODES.length-1){ S.node++; renderFlow(); renderDetail(); } });

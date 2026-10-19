@@ -49,3 +49,8 @@ table.t tr.hl td{background:var(--hard)}
 .f i{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none}
 .view h3{margin:0 0 6px;font-size:15px}
 pre.mono{margin:6px 0;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:9px;font:12.5px/1.5 ui-monospace,Consolas,Menlo,monospace;overflow:auto;white-space:pre;max-height:340px}
+
+.sum{margin:0 0 6px;font-weight:600}
+.steps{margin:0;padding-left:22px}
+.steps li{margin:4px 0;line-height:1.45}
+.steps code{font-size:12px}
