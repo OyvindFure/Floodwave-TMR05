@@ -11,6 +11,7 @@ Statisk nettstad utan bygging. Opne `index.html` i nettlesaren, eller publiser m
 - `assets/site.css`: felles stil
 - `assets/box-generator.js` og `assets/box.css`: alt som høyrer til box generator-sida
 - `assets/overview.js` og `assets/overview.css`: alt som høyrer til oversiktssida
+  (viser òg dei 5 bølgjeprobane: 1B, 3B og 5B frå kanten, pluss 1λ og 2λ, 43 feltpunkt i case.frc)
 
 ## Leggje til ei ny visualisering
 
