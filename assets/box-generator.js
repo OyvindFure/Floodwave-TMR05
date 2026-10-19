@@ -408,9 +408,16 @@ function draw(){
   const b=basis(), R=S.R, cam={dist:R*4.2,f:0}; cam.f=Math.min(W,H)*0.5/R*cam.dist*0.62*S.zoom;
   const ink=css("--ink"), N=S.panels.length, cur=S.i;
   // ghost panels
-  if($("ghost").checked && N<=3000){
-    ctx.strokeStyle=ink; ctx.globalAlpha=.16; ctx.lineWidth=.7;
-    for(let k=cur+1;k<N;k++){ const q=S.panels[k].v.map(v=>proj(v,b,cam)); ctx.beginPath(); q.forEach((a,m)=>m?ctx.lineTo(a.x,a.y):ctx.moveTo(a.x,a.y)); ctx.closePath(); ctx.stroke(); }
+  if($("ghost").checked && !(N>3000 && S.moving)){
+    // alle ikkje-bygde panel i éin sti og eitt strøk, så det går raskt også for tusenvis av panel
+    ctx.strokeStyle=ink; ctx.globalAlpha=N>3000?.12:.16; ctx.lineWidth=.7;
+    ctx.beginPath();
+    const {cy,sy,ce,se}=b, zo=S.D/2, hx=W/2, hy=H/2, cf=cam.f, cd=cam.dist;
+    for(let k=cur+1;k<N;k++){ const v=S.panels[k].v;
+      for(let m=0;m<4;m++){ const p=v[m], x1=cy*p[0]-sy*p[1], y1=sy*p[0]+cy*p[1], z1=p[2]+zo, sc=cf/(cd+y1*ce-z1*se);
+        const X=hx+x1*sc, Y=hy-(y1*se+z1*ce)*sc; if(m) ctx.lineTo(X,Y); else ctx.moveTo(X,Y); }
+      ctx.closePath(); }
+    ctx.stroke();
     ctx.globalAlpha=1;
   }
   // built panels, painter's algorithm
@@ -452,14 +459,16 @@ function draw(){
 }
 
 // ---------- interaction ----------
+// store mesh: hopp over dei svake kantane medan ein dreg/zoomar, og teikn dei att rett etterpå
+function moving(){ S.moving=true; clearTimeout(S.mt); S.mt=setTimeout(()=>{S.moving=false;draw();},160); }
 let drag=null; const pts=new Map(); let pinch=0;
 cv.addEventListener("pointerdown",e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);drag=[e.clientX,e.clientY];cv.classList.add("drag");if(pts.size===2){const a=[...pts.values()];pinch=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);}});
 cv.addEventListener("pointermove",e=>{ if(!pts.has(e.pointerId))return; pts.set(e.pointerId,[e.clientX,e.clientY]);
-  if(pts.size===2){const a=[...pts.values()],d=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]); if(pinch)S.zoom=Math.min(5,Math.max(.3,S.zoom*d/pinch)); pinch=d; draw(); return;}
-  if(!drag)return; S.yaw-=(e.clientX-drag[0])*.008; S.elev=Math.max(-1.5707,Math.min(1.5707,S.elev+(e.clientY-drag[1])*.008)); drag=[e.clientX,e.clientY]; draw(); });
+  if(pts.size===2){const a=[...pts.values()],d=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]); if(pinch)S.zoom=Math.min(5,Math.max(.3,S.zoom*d/pinch)); pinch=d; moving(); draw(); return;}
+  if(!drag)return; S.yaw-=(e.clientX-drag[0])*.008; S.elev=Math.max(-1.5707,Math.min(1.5707,S.elev+(e.clientY-drag[1])*.008)); drag=[e.clientX,e.clientY]; moving(); draw(); });
 const up=e=>{pts.delete(e.pointerId);drag=pts.size?drag:null;pinch=0;cv.classList.remove("drag");};
 cv.addEventListener("pointerup",up); cv.addEventListener("pointercancel",up);
-cv.addEventListener("wheel",e=>{e.preventDefault();S.zoom=Math.min(5,Math.max(.3,S.zoom*Math.exp(-e.deltaY*.0012)));draw();},{passive:false});
+cv.addEventListener("wheel",e=>{e.preventDefault();S.zoom=Math.min(5,Math.max(.3,S.zoom*Math.exp(-e.deltaY*.0012)));moving();draw();},{passive:false});
 cv.addEventListener("dblclick",()=>{S.zoom=1;S.yaw=-0.7;S.elev=0.55;draw();});
 
 let timer=null;
