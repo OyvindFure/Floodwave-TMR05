@@ -4,6 +4,7 @@
 "use strict";
 
 const PAGES = [
+  { key:"ov", href:"overview.html" },
   { key:"box", href:"box-generator.html" }
 ];
 
@@ -12,6 +13,9 @@ const TR = {
     "brand.sub":"TMR05 potensialstrøyming",
     "nav.home":"Forside",
     "nav.box":"Box generator",
+    "nav.ov":"Oversikt",
+    "card.ov.t":"Slik køyrer oppsettet",
+    "card.ov.d":"Frå config.py til ferdige figurar: kva skript som køyrer, kva du gjer sjølv, og kva som blir laga i kvar mappe.",
     "tool.lang":"Språk",
     "tool.theme":"Bytt mellom lys og mørk modus",
     "foot":"TMR05 · NTNU · Gruppe flood wave",
@@ -28,6 +32,9 @@ const TR = {
     "brand.sub":"TMR05 potential flow",
     "nav.home":"Home",
     "nav.box":"Box generator",
+    "nav.ov":"Overview",
+    "card.ov.t":"How the setup runs",
+    "card.ov.d":"From config.py to finished figures: which scripts run, what you do yourself, and what is created in each folder.",
     "tool.lang":"Language",
     "tool.theme":"Switch between light and dark mode",
     "foot":"TMR05 · NTNU · Group flood wave",

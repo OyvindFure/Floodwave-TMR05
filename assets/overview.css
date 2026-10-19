@@ -1,0 +1,51 @@
+/* Stil for oversiktssida */
+:root{ --c-you:#e0a800; --c-py:#1f6feb; --c-wamit:#8957e5; --c-plot:#1a8a3c; }
+:root[data-theme="dark"]{ --c-you:#ffd23f; --c-py:#5b9dff; --c-wamit:#b392f0; --c-plot:#4cd07d; }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --c-you:#ffd23f; --c-py:#5b9dff; --c-wamit:#b392f0; --c-plot:#4cd07d; } }
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 14px;max-width:80ch}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:14px}
+.card h2{font-size:14px;margin:0 0 8px;color:var(--muted);font-weight:600}
+.small{font-size:13px;color:var(--muted)}
+.ctrl{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:13px;background:var(--panel);cursor:pointer}
+.chip.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted);margin-bottom:10px}
+.legend span i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:900px){.flow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.flow{grid-template-columns:minmax(0,1fr)}}
+.node{position:relative;text-align:left;background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--nc,var(--line));border-radius:10px;padding:8px 10px 10px;cursor:pointer;font:inherit;color:var(--ink);min-height:96px}
+.node:hover{border-color:var(--accent);border-top-color:var(--nc)}
+.node.on{background:var(--soft);color:var(--ink);border-color:var(--ink);border-top-color:var(--nc);outline:2px solid var(--ink);outline-offset:1px}
+.node .no{font-size:12px;color:var(--muted)}
+.node .tt{font-weight:600;font-size:14px;margin:2px 0 4px;display:block}
+.node code{font:11.5px ui-monospace,Consolas,Menlo,monospace;color:var(--muted);word-break:break-all}
+.node.done{opacity:.72}
+.badge{display:inline-block;font-size:12px;border-radius:999px;padding:1px 9px;color:#fff;margin-right:4px}
+.badge.you{background:var(--c-you);color:#1b1f24}
+.badge.py{background:var(--c-py)}
+.badge.wamit{background:var(--c-wamit)}
+.badge.plot{background:var(--c-plot)}
+#detail h3{margin:0 0 6px;font-size:17px}
+#detail dl{display:grid;grid-template-columns:110px minmax(0,1fr);gap:6px 12px;margin:10px 0}
+#detail dt{color:var(--muted);font-size:13px}
+#detail dd{margin:0}
+code,.mono{font:12.5px ui-monospace,Consolas,Menlo,monospace}
+code{background:var(--code-bg);border:1px solid var(--line);border-radius:5px;padding:0 5px}
+table.t{border-collapse:collapse;font:12.5px ui-monospace,Consolas,Menlo,monospace;margin:6px 0;display:block;overflow:auto;max-width:100%}
+table.t td,table.t th{border:1px solid var(--line);padding:3px 9px;text-align:right;white-space:nowrap}
+table.t th{background:var(--code-bg);font-weight:600}
+table.t tr.hl td{background:var(--hard)}
+.note{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:8px 0;font-size:13.5px}
+.folder{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:14px;margin-top:10px}
+@media (max-width:760px){.folder{grid-template-columns:minmax(0,1fr)}}
+.files{border:1px solid var(--line);border-radius:8px;background:var(--code-bg);padding:6px}
+.files h4{margin:6px 6px 4px;font-size:12px;color:var(--muted);font-weight:600}
+.f{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:0;background:transparent;padding:4px 8px;border-radius:6px;font:12.5px ui-monospace,Consolas,Menlo,monospace;color:var(--ink);cursor:pointer}
+.f:hover{background:var(--soft)}
+.f.on{background:var(--hard);font-weight:600}
+.f i{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none}
+.view h3{margin:0 0 6px;font-size:15px}
+pre.mono{margin:6px 0;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:9px;font:12.5px/1.5 ui-monospace,Consolas,Menlo,monospace;overflow:auto;white-space:pre;max-height:340px}
