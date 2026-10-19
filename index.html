@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="nn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Box generator steg for steg</title>
+<style>
+:root{
+  --bg:#f5f6f8; --panel:#ffffff; --ink:#1b1f24; --muted:#5b6570; --line:#d5dae0;
+  --canvas:#eef2f7; --accent:#1f6feb; --sel:#ffcc00; --code-bg:#f0f2f5;
+  --hard:rgba(255,204,0,.38); --soft:rgba(31,111,235,.10); --gdf:rgba(26,138,60,.14);
+  --good:#1a8a3c; --badc:#c62828;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14181d; --panel:#1c2229; --ink:#e8ecf0; --muted:#98a3ae; --line:#323b45;
+    --canvas:#10151a; --accent:#5b9dff; --sel:#ffd23f; --code-bg:#12171c;
+    --hard:rgba(255,210,63,.30); --soft:rgba(91,157,255,.14); --gdf:rgba(76,208,125,.16);
+    --good:#4cd07d; --badc:#ff7b72;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1240px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:14px}
+.card h2{font-size:14px;margin:0 0 8px;color:var(--muted);font-weight:600}
+.essence ol{margin:0;padding-left:20px}
+.essence li{margin:6px 0}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:980px){.grid{grid-template-columns:1fr}}
+#stage{position:relative;height:430px;padding:0;overflow:hidden}
+canvas{width:100%;height:100%;display:block;background:var(--canvas);border-radius:10px;cursor:grab;touch-action:none}
+canvas.drag{cursor:grabbing}
+.badge{position:absolute;left:10px;top:10px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:13px}
+.ctrl{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+button{font:inherit;font-size:13px;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:6px 10px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+button:disabled{opacity:.45;cursor:default}
+.row{display:flex;align-items:center;gap:8px;margin:8px 0}
+.row label{flex:0 0 96px;font-size:13px;color:var(--muted)}
+.row input[type=range]{flex:1;min-width:0}
+.row output{flex:0 0 96px;white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums;font-size:13px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:13px;background:var(--panel);cursor:pointer}
+.chip.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset}
+.chip i{display:inline-block;width:11px;height:11px;border-radius:3px}
+.vars{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.vars span{background:var(--code-bg);border:1px solid var(--line);border-radius:7px;padding:3px 9px;font:13px ui-monospace,Consolas,Menlo,monospace}
+.vars b{color:var(--accent)}
+.code{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:6px 0;font:12.5px/1.5 ui-monospace,Consolas,Menlo,monospace;overflow:auto;max-height:470px}
+.cl{display:flex;white-space:pre;padding:0 10px 0 0}
+.cl .ln{flex:0 0 34px;text-align:right;color:var(--muted);padding-right:10px;user-select:none}
+.cl.soft{background:var(--soft)}
+.cl.gdf{background:var(--gdf)}
+.cl.hard{background:var(--hard);font-weight:600}
+.legendnote{font-size:12.5px;color:var(--muted);margin:6px 0 0}
+.legendnote span{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:-1px;margin-right:4px}
+pre.mono{margin:0;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:9px;font:12.5px/1.5 ui-monospace,Consolas,Menlo,monospace;overflow:auto;white-space:pre}
+.stmt{margin:10px 0}
+.stmt .note{color:var(--muted);font-size:13px;margin-bottom:3px}
+table.t{border-collapse:collapse;font:12.5px ui-monospace,Consolas,Menlo,monospace;margin:4px 0}
+table.t td,table.t th{border:1px solid var(--line);padding:3px 9px;text-align:right}
+table.t th{background:var(--code-bg);font-weight:600}
+.msg{padding:7px 10px;border-radius:8px;font-size:14px;margin-top:8px}
+.msg.ok{background:rgba(26,138,60,.12);color:var(--good)}
+.msg.bad{background:rgba(198,40,40,.12);color:var(--badc)}
+.chk{display:flex;align-items:center;gap:7px;margin:6px 0;font-size:14px}
+details summary{cursor:pointer;color:var(--muted);font-size:14px}
+svg text{font:12px system-ui,sans-serif;fill:var(--ink)}
+.small{font-size:13px;color:var(--muted)}
+.infobox{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin:10px 0;font-size:13.5px;line-height:1.55}
+.infobox code{font:12.5px ui-monospace,Consolas,Menlo,monospace}
+.warn{color:var(--badc)}
+.redbadge{position:absolute;left:10px;bottom:10px;max-width:calc(100% - 20px);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:12.5px;display:none}
+.setuphint{color:var(--accent);cursor:pointer;text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Box_generator.py steg for steg</h1>
+  <p class="sub">Trykk «Neste panel» og sjå kva linje i koden som køyrer, og kva panel som blir lagt til i 3D-modellen. Eit lite skrog er valt med vilje, så du ser alt som skjer. Vil du sjå ditt eige case (B = 4, 6, 8 eller 10 m, lengd og meshtettleik), opnar du <span class="setuphint" id="gosetup">Oppsett</span> nederst.</p>
+
+  <div class="card essence">
+    <h2>Essensen i fem punkt</h2>
+    <ol>
+      <li><b>Eit panel er eit lite rektangel.</b> Det blir beskrive med fire hjørnepunkt, kvart med (x, y, z).</li>
+      <li><b>Skroget er fem flater:</b> to langsider, to endar og botnen. Kvar flate er eit rutenett.</li>
+      <li><b>Kvar for-løkke tek éi flate.</b> Ho går gjennom rutenettet rad for rad (<code>j</code>) og kolonne for kolonne (<code>p</code>), og kvar rute blir eitt panel.</li>
+      <li><b>Hjørna blir rekna ut frå startpunkt og steg:</b> «start minus p·dx», «start minus j·dz» og så vidare. Ei koordinat er fast for heile flata (til dømes y = -B/2).</li>
+      <li><b>Rekkjefølgja på hjørna avgjer kva som er ute.</b> Gjennom hjørna 1, 2, 3, 4 mot klokka sett utanfrå peikar panelet sin normal ut av skroget. Det er derfor rekkjefølgja er snudd mellom motståande flater. Resultatet er tre tabellar X, Y og Z (eit panel per rad, fire hjørne per kolonne) som <code>writetoGDF</code> skriv ut som tekst.</li>
+    </ol>
+  </div>
+
+  <div class="grid">
+    <div>
+      <div class="card" id="stage"><canvas id="cv"></canvas><div class="badge" id="badge"></div><div class="redbadge" id="redbadge"></div></div>
+
+      <div class="card">
+        <h2>Rutenettet til denne flata (slik løkka går gjennom det)</h2>
+        <div id="gridsvg"></div>
+        <div class="small" id="gridnote" style="margin-top:6px"></div>
+      </div>
+
+      <div class="card">
+        <h2>Prøv sjølv: kvifor betyr hjørnerekkjefølgja noko?</h2>
+        <div class="chk"><input type="checkbox" id="flip"><label for="flip">Snu hjørnerekkjefølgja for dette panelet</label></div>
+        <div id="flipmsg"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2>Steg gjennom koden</h2>
+        <div class="ctrl">
+          <button id="prev">◀ Førre</button>
+          <button id="next" class="on">Neste panel ▶</button>
+          <button id="play">Spel av</button>
+          <button id="restart">Frå start</button>
+          <button id="back10">-10</button><button id="fwd10">+10</button><button id="fwd100">+100</button>
+        </div>
+        <div class="row"><label for="I">Panel i</label><input id="I" type="range" min="0" max="31" step="1" value="0"><output id="Io"></output></div>
+        <div class="small">Hopp til flate (kvar flate har si eiga løkke):</div>
+        <div class="chips" id="chips"></div>
+        <div class="vars" id="vars"></div>
+        <div class="code" id="code"></div>
+        <p class="legendnote"><span style="background:var(--hard)"></span>linjene som køyrer no &nbsp; <span style="background:var(--soft)"></span>løkka vi er i &nbsp; <span style="background:var(--gdf)"></span>der panelet seinare blir skrive til fila</p>
+      </div>
+
+      <div class="card">
+        <h2>Utrekninga for dette panelet</h2>
+        <div id="calc"></div>
+      </div>
+
+      <div class="card">
+        <h2>Det som blir lagra og skrive til fila</h2>
+        <div class="small" style="margin-bottom:4px">Rad <b id="rowi">0</b> i tabellane X, Y og Z (fire kolonner, ein per hjørne):</div>
+        <div id="xyz"></div>
+        <div class="small" style="margin:8px 0 4px">Det same panelet i <span style="font-family:ui-monospace,Consolas,monospace">case.gdf</span>, fire linjer, ein per hjørne:</div>
+        <pre class="mono" id="gdf"></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <details id="setup">
+      <summary>Oppsett: vel person, lengd og meshtettleik (eller fri storleik)</summary>
+      <div class="small" style="margin:10px 0 4px">Alle i gruppa har same oppsett: B/D = 4, så djupgangen blir D = B/4. Berre breidda B er ulik. Meshet følgjer same regel som prosjektkoden: Nx = round(k·L), Ny = round(k·B) og Nz = round(k·D).</div>
+      <div class="chips" id="persons"></div>
+      <div id="projectCtl" style="display:none">
+        <div class="small">Lengd på skroget, L = n · B:</div>
+        <div class="chips" id="nBs"></div>
+        <div class="small">Meshtettleik k (panel per meter):</div>
+        <div class="chips" id="ks"></div>
+        <div class="small">Snarvegar til dei to studiane:</div>
+        <div class="chips"><span class="chip" id="presetMesh">Meshstudie: L = 1B</span><span class="chip" id="presetLen">Lengdestudie: k = 6</span></div>
+      </div>
+      <div id="freeCtl">
+        <div class="row"><label for="L">Lengd L</label><input id="L" type="range" min="1" max="10" step="0.5" value="4"><output id="Lo"></output></div>
+        <div class="row"><label for="B">Breidd B</label><input id="B" type="range" min="1" max="10" step="0.5" value="2"><output id="Bo"></output></div>
+        <div class="row"><label for="D">Djupgang D</label><input id="D" type="range" min="0.5" max="5" step="0.5" value="1"><output id="Do"></output></div>
+        <div class="row"><label for="NX">Nx</label><input id="NX" type="range" min="1" max="8" step="1" value="4"><output id="NXo"></output></div>
+        <div class="row"><label for="NY">Ny</label><input id="NY" type="range" min="1" max="6" step="1" value="2"><output id="NYo"></output></div>
+        <div class="row"><label for="NZ">Nz</label><input id="NZ" type="range" min="1" max="4" step="1" value="2"><output id="NZo"></output></div>
+      </div>
+      <div class="infobox" id="caseinfo"></div>
+      <div class="chk"><input type="checkbox" id="ghost" checked><label for="ghost">Vis panel som ikkje er lagde til enno som svake kantar</label></div>
+      <div class="small">Dra i 3D-modellen for å rotere, rull for å zoome. Piltastane til venstre og høgre går eitt panel fram og tilbake. Store mesh blir viste forenkla i 3D (sjå meldinga nede til venstre i modellen), men tala i oppsettet er alltid dei verkelege.</div>
+    </details>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const CODE = [
+"import numpy as np",
+"",
+"def box_generator(length, width, draft, Nx, Ny, Nz):",
+"    dx = length / Nx",
+"    dy = width / Ny",
+"    dz = draft / Nz",
+"    Npanel = Nx * Ny + Nx * Nz * 2 + Ny * Nz * 2",
+"    X = np.zeros((Npanel, 4)); Y = np.zeros((Npanel, 4)); Z = np.zeros((Npanel, 4))",
+"    i = 0",
+"    for j in range(Nz):",
+"        for p in range(Nx):",
+"            Y[i, :] = -width / 2",
+"            X[i, :] = [length/2 - p*dx, length/2 - (p+1)*dx, length/2 - (p+1)*dx, length/2 - p*dx]",
+"            Z[i, :] = [-j*dz, -j*dz, -(j+1)*dz, -(j+1)*dz]",
+"            i += 1",
+"    for j in range(Nz):",
+"        for p in range(Nx):",
+"            Y[i, :] = width / 2",
+"            X[i, :] = [length/2 - (p+1)*dx, length/2 - p*dx, length/2 - p*dx, length/2 - (p+1)*dx]",
+"            Z[i, :] = [-j*dz, -j*dz, -(j+1)*dz, -(j+1)*dz]",
+"            i += 1",
+"    for j in range(Nz):",
+"        for p in range(Ny):",
+"            X[i, :] = length / 2",
+"            Y[i, :] = [width/2 - p*dy, width/2 - (p+1)*dy, width/2 - (p+1)*dy, width/2 - p*dy]",
+"            Z[i, :] = [-j*dz, -j*dz, -(j+1)*dz, -(j+1)*dz]",
+"            i += 1",
+"    for j in range(Nz):",
+"        for p in range(Ny):",
+"            X[i, :] = -length / 2",
+"            Y[i, :] = [width/2 - (p+1)*dy, width/2 - p*dy, width/2 - p*dy, width/2 - (p+1)*dy]",
+"            Z[i, :] = [-j*dz, -j*dz, -(j+1)*dz, -(j+1)*dz]",
+"            i += 1",
+"    for j in range(Nx):",
+"        for p in range(Ny):",
+"            Z[i, :] = -draft",
+"            Y[i, :] = [width/2 - p*dy, width/2 - (p+1)*dy, width/2 - (p+1)*dy, width/2 - p*dy]",
+"            X[i, :] = [length/2 - j*dx, length/2 - j*dx, length/2 - (j+1)*dx, length/2 - (j+1)*dx]",
+"            i += 1",
+"    return X, Y, Z, Npanel, 0, 0",
+"",
+"def writetoGDF(X, Y, Z, Npanel, path, isx=0, isy=0):",
+"    with open(path, \"w\") as f:",
+"        f.write(f\"{path}  --\\n\")",
+"        f.write(\"1.000       9.806650    ULEN, GRAV\\n\")",
+"        f.write(f\"{isx}           {isy}            ISX, ISY\\n\")",
+"        f.write(f\"{Npanel}    NPAN\\n\")",
+"        for i in range(Npanel):",
+"            for j in range(4):",
+"                f.write(f\"{X[i, j]:.6f} {Y[i, j]:.6f} {Z[i, j]:.6f} \\n\")"
+];
+// 1-based line numbers: loop block [start, end], statement lines, i += 1 line
+const GROUPS = [
+  {name:"Side y = -B/2", hue:205, s:10, e:15, st:[12,13,14], inc:15},
+  {name:"Side y = +B/2", hue:160, s:16, e:21, st:[18,19,20], inc:21},
+  {name:"Ende x = +L/2", hue:32,  s:22, e:27, st:[24,25,26], inc:27},
+  {name:"Ende x = -L/2", hue:345, s:28, e:33, st:[30,31,32], inc:33},
+  {name:"Botn z = -D",   hue:268, s:34, e:39, st:[36,37,38], inc:39}
+];
+const POFF = [[0,1,1,0],[1,0,0,1],[0,1,1,0],[1,0,0,1],[0,1,1,0]];
+const JOFF = [0,0,1,1];
+const GDF_LINES = [48,49,50];
+
+const S = { L:4,B:2,D:1,Nx:4,Ny:2,Nz:2, panels:[], i:0, yaw:-0.7, elev:0.55, zoom:1, playing:false, flip:false,
+            person:-1, nB:1, k:4, reduced:false, real:null };
+const PERSONS=[{n:"Anders",B:4},{n:"Øyvind",B:6},{n:"Zhijun",B:8},{n:"Øyonn",B:10}];
+const CAP_REAL=6000, CAP_SHOW=1200;
+function pyRound(x){ const f=Math.floor(x), d=x-f; if(Math.abs(d-0.5)<1e-9) return (f%2===0)?f:f+1; return Math.round(x); }
+function npan(a,b,c){return a*b+2*a*c+2*b*c;}
+
+// ---------- geometry, same ordering as the Python code ----------
+function boxGenerator(length, width, draft, Nx, Ny, Nz){
+  const dx=length/Nx, dy=width/Ny, dz=draft/Nz, P=[];
+  const add=(g,X,Y,Z)=>P.push({g, v:[0,1,2,3].map(c=>[X[c],Y[c],Z[c]])});
+  for(let j=0;j<Nz;j++)for(let p=0;p<Nx;p++) add(0,[length/2-p*dx,length/2-(p+1)*dx,length/2-(p+1)*dx,length/2-p*dx],[-width/2,-width/2,-width/2,-width/2],[-j*dz,-j*dz,-(j+1)*dz,-(j+1)*dz]);
+  for(let j=0;j<Nz;j++)for(let p=0;p<Nx;p++) add(1,[length/2-(p+1)*dx,length/2-p*dx,length/2-p*dx,length/2-(p+1)*dx],[width/2,width/2,width/2,width/2],[-j*dz,-j*dz,-(j+1)*dz,-(j+1)*dz]);
+  for(let j=0;j<Nz;j++)for(let p=0;p<Ny;p++) add(2,[length/2,length/2,length/2,length/2],[width/2-p*dy,width/2-(p+1)*dy,width/2-(p+1)*dy,width/2-p*dy],[-j*dz,-j*dz,-(j+1)*dz,-(j+1)*dz]);
+  for(let j=0;j<Nz;j++)for(let p=0;p<Ny;p++) add(3,[-length/2,-length/2,-length/2,-length/2],[width/2-(p+1)*dy,width/2-p*dy,width/2-p*dy,width/2-(p+1)*dy],[-j*dz,-j*dz,-(j+1)*dz,-(j+1)*dz]);
+  for(let j=0;j<Nx;j++)for(let p=0;p<Ny;p++) add(4,[length/2-j*dx,length/2-j*dx,length/2-(j+1)*dx,length/2-(j+1)*dx],[width/2-p*dy,width/2-(p+1)*dy,width/2-(p+1)*dy,width/2-p*dy],[-draft,-draft,-draft,-draft]);
+  return P;
+}
+function cross(a,b){return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];}
+function sub(a,b){return [a[0]-b[0],a[1]-b[1],a[2]-b[2]];}
+function dot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
+const fmt = n => { const r=+(+n).toFixed(3); return String(Object.is(r,-0)?0:r); };
+const f6 = x => (Math.abs(x)<5e-7?0:x).toFixed(6);
+
+function sizes(){
+  const a=[S.Nx*S.Nz,S.Nx*S.Nz,S.Ny*S.Nz,S.Ny*S.Nz,S.Nx*S.Ny];
+  const M=[S.Nx,S.Nx,S.Ny,S.Ny,S.Ny], K=[S.Nz,S.Nz,S.Nz,S.Nz,S.Nx];
+  const st=[0]; for(let g=0;g<5;g++) st.push(st[g]+a[g]);
+  return {a,M,K,st};
+}
+function locate(i){
+  const z=sizes(); let g=0; while(g<4 && i>=z.st[g+1]) g++;
+  const local=i-z.st[g]; return {g, j:Math.floor(local/z.M[g]), p:local%z.M[g], z};
+}
+// statement descriptors in code order, with the numbers inserted
+function describe(g,j,p){
+  const L=S.L,B=S.B,D=S.D,dx=L/S.Nx,dy=B/S.Ny,dz=D/S.Nz;
+  const lst=(base,idx,step)=>{
+    const parts=idx.map(k=> base===null ? "-"+k+"*"+fmt(step) : fmt(base)+" - "+k+"*"+fmt(step));
+    const vals=idx.map(k=> base===null ? -k*step : base-k*step);
+    return {txt:"["+parts.join(", ")+"]", vals};
+  };
+  const cst=(v)=>({txt:fmt(v), vals:[v,v,v,v]});
+  const P=[p,p+1,p+1,p], Q=[p+1,p,p,p+1], J=[j,j,j+1,j+1];
+  switch(g){
+    case 0: return [{line:12,v:"Y",...cst(-B/2),note:"Y er fast for heile flata (langsida mot -y)."},
+                    {line:13,v:"X",...lst(L/2,P,dx),note:"X: start +L/2, så eitt steg dx per kolonne p."},
+                    {line:14,v:"Z",...lst(null,J,dz),note:"Z: start 0 (vasslinja), så eitt steg dz nedover per rad j."}];
+    case 1: return [{line:18,v:"Y",...cst(B/2),note:"Y er fast for heile flata (langsida mot +y)."},
+                    {line:19,v:"X",...lst(L/2,Q,dx),note:"Same rute som på motsett side, men hjørna står i omvend rekkjefølgje (p+1 først)."},
+                    {line:20,v:"Z",...lst(null,J,dz),note:"Z: som før, nedover per rad j."}];
+    case 2: return [{line:24,v:"X",...cst(L/2),note:"X er fast for heile flata (enden mot +x)."},
+                    {line:25,v:"Y",...lst(B/2,P,dy),note:"Y: start +B/2, så eitt steg dy per kolonne p."},
+                    {line:26,v:"Z",...lst(null,J,dz),note:"Z: nedover per rad j."}];
+    case 3: return [{line:30,v:"X",...cst(-L/2),note:"X er fast for heile flata (enden mot -x)."},
+                    {line:31,v:"Y",...lst(B/2,Q,dy),note:"Same rute som på motsett ende, men hjørna står i omvend rekkjefølgje."},
+                    {line:32,v:"Z",...lst(null,J,dz),note:"Z: nedover per rad j."}];
+    default:return [{line:36,v:"Z",...cst(-D),note:"Z er fast for heile flata (botnen)."},
+                    {line:37,v:"Y",...lst(B/2,P,dy),note:"Y: start +B/2, eitt steg dy per kolonne p."},
+                    {line:38,v:"X",...lst(L/2,J,dx),note:"X: start +L/2, eitt steg dx per rad j."}];
+  }
+}
+
+// ---------- state updates ----------
+function rebuild(){
+  let L,B,D,Nx,Ny,Nz;
+  if(S.person<0){ L=+$("L").value; B=+$("B").value; D=+$("D").value; Nx=+$("NX").value; Ny=+$("NY").value; Nz=+$("NZ").value;
+    ["Lo","Bo","Do"].forEach((id,k)=>$(id).textContent=[L,B,D][k]+" m"); $("NXo").textContent=Nx; $("NYo").textContent=Ny; $("NZo").textContent=Nz; }
+  else { B=PERSONS[S.person].B; D=B/4; L=S.nB*B; Nx=Math.max(1,pyRound(S.k*L)); Ny=Math.max(1,pyRound(S.k*B)); Nz=Math.max(1,pyRound(S.k*D)); }
+  S.real={L,B,D,Nx,Ny,Nz,N:npan(Nx,Ny,Nz)};
+  let dx=Nx,dy=Ny,dz=Nz; S.reduced=false;
+  if(S.real.N>CAP_REAL){
+    let f=1; const r=(n,f)=>Math.max(1,Math.round(n/f));
+    while(npan(r(Nx,f),r(Ny,f),r(Nz,f))>CAP_SHOW) f++;
+    dx=r(Nx,f); dy=r(Ny,f); dz=r(Nz,f); S.reduced=true; S.f=f;
+  }
+  S.L=L; S.B=B; S.D=D; S.Nx=dx; S.Ny=dy; S.Nz=dz;
+  S.panels=boxGenerator(S.L,S.B,S.D,S.Nx,S.Ny,S.Nz);
+  S.panels.forEach((p,i)=>{
+    p.c=[0,1,2].map(a=>(p.v[0][a]+p.v[1][a]+p.v[2][a]+p.v[3][a])/4);
+    const n=cross(sub(p.v[2],p.v[0]),sub(p.v[3],p.v[1])); const l=Math.hypot(...n)||1; p.n=n.map(x=>x/l);
+  });
+  S.R=Math.hypot(S.L,S.B,S.D)/2;
+  const N=S.panels.length; $("I").max=N-1; if(S.i>N-1) S.i=N-1;
+  $("I").value=S.i;
+  updateInfo(); buildChips(); buildCode(); update();
+}
+function caseLine(){
+  const r=S.real; return "B = "+fmt(r.B)+" m, D = "+fmt(r.D)+" m, L = "+fmt(r.L)+" m"+(S.person>=0?", k = "+S.k:"")+": "+r.N+" panel"+(S.reduced?" (forenkla visning)":"");
+}
+function updateInfo(){
+  const r=S.real, dx=r.L/r.Nx, dy=r.B/r.Ny, dz=r.D/r.Nz; let h="";
+  if(S.person>=0){
+    h+="<b>"+PERSONS[S.person].n+"</b>: B = "+fmt(r.B)+" m. Med B/D = 4 blir D = B/4 = "+fmt(r.D)+" m. Lengd L = "+S.nB+"·B = "+fmt(r.L)+" m.<br>";
+    h+="Meshtettleik k = "+S.k+": Nx = round(k·L) = <b>"+r.Nx+"</b>, Ny = round(k·B) = <b>"+r.Ny+"</b>, Nz = round(k·D) = <b>"+r.Nz+"</b>.<br>";
+  } else {
+    h+="Fri storleik: B = "+fmt(r.B)+" m, D = "+fmt(r.D)+" m, L = "+fmt(r.L)+" m, Nx = <b>"+r.Nx+"</b>, Ny = <b>"+r.Ny+"</b>, Nz = <b>"+r.Nz+"</b>.<br>";
+  }
+  h+="Npanel = Nx·Ny + 2·Nx·Nz + 2·Ny·Nz = "+(r.Nx*r.Ny)+" + "+(2*r.Nx*r.Nz)+" + "+(2*r.Ny*r.Nz)+" = <b>"+r.N+"</b> panel.<br>";
+  h+="Panelstorleik: dx = "+fmt(dx)+" m, dy = "+fmt(dy)+" m, dz = "+fmt(dz)+" m.";
+  if(S.person>=0 && Math.abs(dz*S.k-1)>1e-6) h+="<br><span class=\"warn\">Merk: k·D = "+fmt(S.k*r.D)+" er ikkje eit heiltal, så Nz blir runda og dz er ikkje 1/k. Det gjeld særleg dei grovaste meshane.</span>";
+  $("caseinfo").innerHTML=h;
+  const rb=$("redbadge");
+  if(S.reduced){ rb.style.display="block"; rb.innerHTML="Forenkla visning: dette caset har <b>"+r.N+"</b> panel. Her vises same skrog med Nx = "+S.Nx+", Ny = "+S.Ny+", Nz = "+S.Nz+" ("+S.panels.length+" panel), så stegvisinga blir oversiktleg. Utrekningane til høgre gjeld denne forenkla utgåva."; }
+  else rb.style.display="none";
+}
+function buildChips(){
+  const z=sizes(); $("chips").innerHTML=GROUPS.map((g,k)=>
+    '<span class="chip" data-g="'+k+'"><i style="background:hsl('+g.hue+',60%,52%)"></i>'+(k+1)+'. '+g.name+' ('+z.a[k]+')</span>').join("");
+  document.querySelectorAll("#chips .chip").forEach(c=>c.addEventListener("click",()=>{ stop(); S.i=sizes().st[+c.dataset.g]; update(); }));
+}
+function buildCode(){
+  $("code").innerHTML=CODE.map((t,n)=>'<div class="cl" data-n="'+(n+1)+'"><span class="ln">'+(n+1)+'</span><span>'+t.replace(/&/g,"&amp;").replace(/</g,"&lt;")+'</span></div>').join("");
+}
+function update(){
+  if(!Number.isFinite(S.i)||S.i<0) S.i=0; if(S.i>=S.panels.length) S.i=S.panels.length-1;
+  const N=S.panels.length, i=S.i, {g,j,p,z}=locate(i), pan=S.panels[i];
+  $("I").value=i; $("Io").textContent=(i+1)+" av "+N; $("rowi").textContent=i;
+  $("prev").disabled=i===0; $("next").disabled=i===N-1;
+  document.querySelectorAll("#chips .chip").forEach(c=>c.classList.toggle("on",+c.dataset.g===g));
+  $("badge").innerHTML="Flate <b>"+(g+1)+"</b> av 5: "+GROUPS[g].name+" &nbsp; panel <b>"+(i+1)+"</b> av "+N+"<div class=\"small\" style=\"margin-top:2px\">"+caseLine()+"</div>";
+  // variables
+  $("vars").innerHTML="<span>løkke <b>"+(g+1)+"</b></span><span>j = <b>"+j+"</b></span><span>p = <b>"+p+"</b></span><span>i = <b>"+i+"</b></span>"+
+     "<span>dx = <b>"+fmt(S.L/S.Nx)+"</b></span><span>dy = <b>"+fmt(S.B/S.Ny)+"</b></span><span>dz = <b>"+fmt(S.D/S.Nz)+"</b></span>";
+  // code highlight
+  const G=GROUPS[g];
+  document.querySelectorAll(".cl").forEach(el=>{
+    const n=+el.dataset.n; el.className="cl";
+    if(n>=G.s&&n<=G.e) el.classList.add("soft");
+    if(G.st.includes(n)||n===G.inc) el.classList.add("hard");
+    if(GDF_LINES.includes(n)) el.classList.add("gdf");
+  });
+  const hardEl=document.querySelector('.cl[data-n="'+G.st[0]+'"]');
+  if(hardEl){ const box=$("code"); const top=hardEl.offsetTop-box.offsetTop-80; if(hardEl.offsetTop<box.scrollTop+10||hardEl.offsetTop>box.scrollTop+box.clientHeight-90) box.scrollTop=Math.max(0,top); }
+  // calculation
+  const D=describe(g,j,p);
+  const loopTxt='<div class="stmt"><div class="note">Løkke '+(g+1)+': <code>for j in range('+(g<4?"Nz":"Nx")+')</code> og <code>for p in range('+(g<2?"Nx":"Ny")+')</code>. No er j = '+j+' og p = '+p+', og dette er panel nummer i = '+i+'.</div></div>';
+  $("calc").innerHTML=loopTxt+D.map(d=>{
+    const line=CODE[d.line-1].trim().replace(/&/g,"&amp;").replace(/</g,"&lt;");
+    return '<div class="stmt"><div class="note">Linje '+d.line+': '+d.note+'</div>'+
+      '<pre class="mono">'+line+'\n'+d.v+'[i, :] = '+d.txt+'\n= ['+d.vals.map(fmt).join(", ")+']</pre></div>';
+  }).join("");
+  // X, Y, Z table for row i, and file lines
+  const rows={X:[0,0,0,0],Y:[0,0,0,0],Z:[0,0,0,0]};
+  D.forEach(d=>rows[d.v]=d.vals);
+  $("xyz").innerHTML='<table class="t"><tr><th></th><th>hjørne 1</th><th>hjørne 2</th><th>hjørne 3</th><th>hjørne 4</th></tr>'+
+    ["X","Y","Z"].map(k=>"<tr><th>"+k+"[i]</th>"+rows[k].map(v=>"<td>"+fmt(v)+"</td>").join("")+"</tr>").join("")+"</table>";
+  $("gdf").textContent=[0,1,2,3].map(c=>f6(rows.X[c])+" "+f6(rows.Y[c])+" "+f6(rows.Z[c])+" ").join("\n");
+  drawGrid(g,j,p,z);
+  const normal = pan.n;
+  $("flipmsg").innerHTML = S.flip
+    ? '<div class="msg bad">Hjørna står no i omvend rekkjefølgje (1, 4, 3, 2). Normalen (raud pil) peikar <b>inn</b> i skroget. WAMIT ville tolka dette panelet som vendt feil veg og gitt gale resultat.</div>'
+    : '<div class="msg ok">Hjørna går 1, 2, 3, 4 mot klokka sett utanfrå, og normalen (grøn pil) peikar <b>ut</b> av skroget. Slik vil WAMIT ha det. Kryss av for å sjå kva som skjer om rekkjefølgja blir omvend.</div>';
+  draw();
+}
+
+// ---------- 2D grid ----------
+function drawGrid(g,j,p,z){
+  const M=z.M[g], K=z.K[g], cell=Math.min(44,400/M,300/K), big=cell<5;
+  const W=M*cell+60, H=K*cell+54, ox=30, oy=24;
+  const hue=GROUPS[g].hue; let s='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" style="max-width:100%">';
+  const cur=z.st[g]+j*M+p;
+  for(let r=0;r<K;r++)for(let c=0;c<M;c++){
+    const idx=z.st[g]+r*M+c, done=idx<S.i, now=idx===S.i;
+    s+='<rect x="'+(ox+c*cell)+'" y="'+(oy+r*cell)+'" width="'+cell+'" height="'+cell+'" fill="'+(now?"rgba(255,204,0,.9)":done?"hsla("+hue+",60%,52%,.55)":(big?"rgba(127,127,127,.14)":"none"))+'"'+(big?'':' stroke="currentColor" stroke-opacity=".35"')+'/>';
+  }
+  if(big) s+='<rect x="'+ox+'" y="'+oy+'" width="'+(M*cell)+'" height="'+(K*cell)+'" fill="none" stroke="currentColor" stroke-opacity=".5"/>';
+  // corner numbers of the current cell
+  const po=POFF[g];
+  for(let c=0;c<4;c++){
+    const cx=ox+(p+po[c])*cell, cy=oy+(j+JOFF[c])*cell;
+    const rr=Math.max(3,Math.min(8,cell*0.7));
+    s+='<circle cx="'+cx+'" cy="'+cy+'" r="'+rr+'" fill="#111" stroke="#ffcc00" stroke-width="1.5"/>'+(rr>=6?'<text x="'+cx+'" y="'+(cy+4)+'" text-anchor="middle" style="fill:#fff;font-weight:700;font-size:11px">'+(c+1)+'</text>':'');
+  }
+  s+='<text x="'+(ox+M*cell/2)+'" y="14" text-anchor="middle">p: kolonne 0 til '+(M-1)+' →</text>';
+  s+='<text x="10" y="'+(oy+K*cell/2)+'" text-anchor="middle" transform="rotate(-90 10 '+(oy+K*cell/2)+')">j: rad 0 til '+(K-1)+' ↓</text>';
+  s+='</svg>';
+  $("gridsvg").innerHTML=s;
+  const dirP=g<2?"x minkar frå +L/2":"y minkar frå +B/2", dirJ=g<4?"z minkar frå 0 (vasslinja) mot -D":"x minkar frå +L/2";
+  const fixed=["y = -B/2","y = +B/2","x = +L/2","x = -L/2","z = -D"][g];
+  $("gridnote").innerHTML="Fast koordinat for heile flata: <b>"+fixed+"</b>. Mot høgre (p aukar): "+dirP+". Nedover (j aukar): "+dirJ+". Dei gule rutene er panelet som blir laga no, og dei fargelagde rutene er ferdige. Nummera 1 til 4 viser hjørnerekkjefølgja i dette panelet."+(g%2===1&&g<4?" Legg merke til at hjørna går motsett veg samanlikna med flata på motsett side.":"");
+}
+
+// ---------- 3D rendering ----------
+const cv=$("cv"), ctx=cv.getContext("2d"); let W=0,H=0,DPR=1;
+function resize(){ DPR=window.devicePixelRatio||1; const r=cv.getBoundingClientRect(); W=r.width; H=r.height; cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR); draw(); }
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+function basis(){return {cy:Math.cos(S.yaw),sy:Math.sin(S.yaw),ce:Math.cos(S.elev),se:Math.sin(S.elev)};}
+function toView(p,b){const x1=b.cy*p[0]-b.sy*p[1], y1=b.sy*p[0]+b.cy*p[1], z1=p[2]; return [x1,y1*b.se+z1*b.ce,y1*b.ce-z1*b.se];}
+function proj(p,b,cam){const v=toView([p[0],p[1],p[2]+S.D/2],b); const s=cam.f/(cam.dist+v[2]); return {x:W/2+v[0]*s,y:H/2-v[1]*s,d:v[2]};}
+
+function draw(){
+  if(!W||!S.panels.length) return;
+  ctx.setTransform(DPR,0,0,DPR,0,0); ctx.clearRect(0,0,W,H);
+  const b=basis(), R=S.R, cam={dist:R*4.2,f:0}; cam.f=Math.min(W,H)*0.5/R*cam.dist*0.62*S.zoom;
+  const ink=css("--ink"), N=S.panels.length, cur=S.i;
+  // ghost panels
+  if($("ghost").checked && N<=3000){
+    ctx.strokeStyle=ink; ctx.globalAlpha=.16; ctx.lineWidth=.7;
+    for(let k=cur+1;k<N;k++){ const q=S.panels[k].v.map(v=>proj(v,b,cam)); ctx.beginPath(); q.forEach((a,m)=>m?ctx.lineTo(a.x,a.y):ctx.moveTo(a.x,a.y)); ctx.closePath(); ctx.stroke(); }
+    ctx.globalAlpha=1;
+  }
+  // built panels, painter's algorithm
+  const list=[];
+  for(let k=0;k<=cur;k++){ const pr=S.panels[k].v.map(v=>proj(v,b,cam)); list.push({k,pr,dep:(pr[0].d+pr[1].d+pr[2].d+pr[3].d)/4}); }
+  list.sort((a,c)=>c.dep-a.dep);
+  const light=[-0.35,0.55,0.75], ll=Math.hypot(...light), n0=toView([0,0,S.D/2],b);
+  for(const it of list){
+    const p=S.panels[it.k], nv=toView([p.n[0],p.n[1],p.n[2]+S.D/2],b);
+    const lam=Math.max(0,((nv[0]-n0[0])*light[0]+(nv[1]-n0[1])*light[1]+(-(nv[2]-n0[2]))*light[2])/ll), sh=.55+.45*lam;
+    ctx.beginPath(); it.pr.forEach((a,m)=>m?ctx.lineTo(a.x,a.y):ctx.moveTo(a.x,a.y)); ctx.closePath();
+    ctx.fillStyle="hsl("+GROUPS[p.g].hue+",58%,"+(30+34*sh).toFixed(0)+"%)"; ctx.fill();
+    ctx.strokeStyle=ink; ctx.globalAlpha=.5; ctx.lineWidth=.8; ctx.stroke(); ctx.globalAlpha=1;
+  }
+  // current panel
+  const P=S.panels[cur]; let order=[0,1,2,3]; if(S.flip) order=[0,3,2,1];
+  const pr=order.map(c=>proj(P.v[c],b,cam));
+  ctx.beginPath(); pr.forEach((a,m)=>m?ctx.lineTo(a.x,a.y):ctx.moveTo(a.x,a.y)); ctx.closePath();
+  ctx.fillStyle="rgba(255,204,0,.55)"; ctx.fill(); ctx.strokeStyle=css("--sel"); ctx.lineWidth=2.6; ctx.stroke();
+  // normal from the order used
+  const vv=order.map(c=>P.v[c]); const nn=cross(sub(vv[2],vv[0]),sub(vv[3],vv[1])); const nl=Math.hypot(...nn)||1;
+  const len=Math.max(Math.min(S.L/S.Nx,S.B/S.Ny,S.D/S.Nz)*1.1,R*0.25);
+  const e=[P.c[0]+nn[0]/nl*len,P.c[1]+nn[1]/nl*len,P.c[2]+nn[2]/nl*len];
+  const a=proj(P.c,b,cam), t=proj(e,b,cam), col=S.flip?"#e5484d":"#2fb457";
+  ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(t.x,t.y); ctx.stroke();
+  const ang=Math.atan2(t.y-a.y,t.x-a.x); ctx.beginPath(); ctx.moveTo(t.x,t.y); ctx.lineTo(t.x-10*Math.cos(ang-.45),t.y-10*Math.sin(ang-.45)); ctx.lineTo(t.x-10*Math.cos(ang+.45),t.y-10*Math.sin(ang+.45)); ctx.closePath(); ctx.fill();
+  // corner numbers and path
+  for(let c=0;c<4;c++){ const q=pr[c], r=pr[(c+1)%4];
+    const mx=(q.x+r.x)/2, my=(q.y+r.y)/2, an=Math.atan2(r.y-q.y,r.x-q.x);
+    ctx.strokeStyle=css("--sel"); ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(mx-7*Math.cos(an-.5),my-7*Math.sin(an-.5)); ctx.lineTo(mx,my); ctx.lineTo(mx-7*Math.cos(an+.5),my-7*Math.sin(an+.5)); ctx.stroke(); }
+  pr.forEach((q,c)=>{ ctx.beginPath(); ctx.arc(q.x,q.y,10,0,6.283); ctx.fillStyle="#111"; ctx.fill(); ctx.lineWidth=1.6; ctx.strokeStyle=css("--sel"); ctx.stroke();
+    ctx.fillStyle="#fff"; ctx.font="bold 12px system-ui,sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(String(c+1),q.x,q.y+.5); });
+  // axes
+  const ox=44, oy=H-44, al=28, o=toView([0,0,0],b);
+  [["x",[1,0,0],"#e5534b"],["y",[0,1,0],"#3fb950"],["z",[0,0,1],"#4c8dff"]].forEach(([nm,v,cl])=>{
+    const tt=toView(v,b), dx=(tt[0]-o[0])*al, dy=-(tt[1]-o[1])*al;
+    ctx.strokeStyle=cl; ctx.lineWidth=2.2; ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(ox+dx,oy+dy); ctx.stroke();
+    ctx.fillStyle=cl; ctx.font="bold 12px system-ui,sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(nm,ox+dx*1.3,oy+dy*1.3); });
+}
+
+// ---------- interaction ----------
+let drag=null; const pts=new Map(); let pinch=0;
+cv.addEventListener("pointerdown",e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);drag=[e.clientX,e.clientY];cv.classList.add("drag");if(pts.size===2){const a=[...pts.values()];pinch=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);}});
+cv.addEventListener("pointermove",e=>{ if(!pts.has(e.pointerId))return; pts.set(e.pointerId,[e.clientX,e.clientY]);
+  if(pts.size===2){const a=[...pts.values()],d=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]); if(pinch)S.zoom=Math.min(5,Math.max(.3,S.zoom*d/pinch)); pinch=d; draw(); return;}
+  if(!drag)return; S.yaw-=(e.clientX-drag[0])*.008; S.elev=Math.max(-1.5707,Math.min(1.5707,S.elev+(e.clientY-drag[1])*.008)); drag=[e.clientX,e.clientY]; draw(); });
+const up=e=>{pts.delete(e.pointerId);drag=pts.size?drag:null;pinch=0;cv.classList.remove("drag");};
+cv.addEventListener("pointerup",up); cv.addEventListener("pointercancel",up);
+cv.addEventListener("wheel",e=>{e.preventDefault();S.zoom=Math.min(5,Math.max(.3,S.zoom*Math.exp(-e.deltaY*.0012)));draw();},{passive:false});
+cv.addEventListener("dblclick",()=>{S.zoom=1;S.yaw=-0.7;S.elev=0.55;draw();});
+
+let timer=null;
+function stop(){ if(timer){clearInterval(timer);timer=null;} $("play").textContent="Spel av"; $("play").classList.remove("on"); }
+function step(d){ const N=S.panels.length; S.i=Math.max(0,Math.min(N-1,S.i+d)); update(); }
+$("next").addEventListener("click",()=>{stop();step(1);});
+$("prev").addEventListener("click",()=>{stop();step(-1);});
+$("restart").addEventListener("click",()=>{stop();S.i=0;update();});
+$("play").addEventListener("click",()=>{ if(timer){stop();return;} const N=S.panels.length; if(S.i>=N-1)S.i=0; $("play").textContent="Stopp"; $("play").classList.add("on"); update();
+  const big=N>60, st=big?Math.ceil(N/250):1;
+  timer=setInterval(()=>{ if(S.i>=N-1){stop();return;} step(st); },big?90:550); });
+$("back10").addEventListener("click",()=>{stop();step(-10);});
+$("fwd10").addEventListener("click",()=>{stop();step(10);});
+$("fwd100").addEventListener("click",()=>{stop();step(100);});
+$("I").addEventListener("input",()=>{stop();S.i=+$("I").value;update();});
+$("flip").addEventListener("change",()=>{S.flip=$("flip").checked;update();});
+$("ghost").addEventListener("change",draw);
+["L","B","D","NX","NY","NZ"].forEach(id=>$(id).addEventListener("input",()=>{stop();rebuild();}));
+function buildSetup(){
+  $("persons").innerHTML=PERSONS.map((p,k)=>'<span class="chip'+(S.person===k?' on':'')+'" data-p="'+k+'">'+p.n+': B = '+p.B+' m</span>').join("")+
+     '<span class="chip'+(S.person<0?' on':'')+'" data-p="-1">Fri storleik</span>';
+  $("nBs").innerHTML=[1,2,3,4,5,6].map(n=>'<span class="chip'+(S.nB===n?' on':'')+'" data-n="'+n+'">L = '+n+'B</span>').join("");
+  $("ks").innerHTML=[1,2,4,6,8,10].map(k=>'<span class="chip'+(S.k===k?' on':'')+'" data-k="'+k+'">k = '+k+'</span>').join("");
+  $("projectCtl").style.display=S.person>=0?"block":"none"; $("freeCtl").style.display=S.person<0?"block":"none";
+  document.querySelectorAll("#persons .chip").forEach(c=>c.addEventListener("click",()=>{ stop(); S.person=+c.dataset.p; S.i=0; buildSetup(); rebuild(); }));
+  document.querySelectorAll("#nBs .chip").forEach(c=>c.addEventListener("click",()=>{ stop(); S.nB=+c.dataset.n; S.i=0; buildSetup(); rebuild(); }));
+  document.querySelectorAll("#ks .chip").forEach(c=>c.addEventListener("click",()=>{ stop(); S.k=+c.dataset.k; S.i=0; buildSetup(); rebuild(); }));
+}
+$("presetMesh").addEventListener("click",()=>{ stop(); S.nB=1; S.i=0; buildSetup(); rebuild(); });
+$("presetLen").addEventListener("click",()=>{ stop(); S.k=6; S.i=0; buildSetup(); rebuild(); });
+$("gosetup").addEventListener("click",()=>{ const d=$("setup"); d.open=true; d.scrollIntoView({behavior:"smooth",block:"start"}); });
+buildSetup();
+document.addEventListener("keydown",e=>{ if(e.target.tagName==="INPUT"&&e.target.type==="range")return; if(e.key==="ArrowRight"){stop();step(1);} if(e.key==="ArrowLeft"){stop();step(-1);} });
+window.addEventListener("resize",resize);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",draw);
+rebuild(); resize();
+</script>
+</body>
+</html>
