@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="nn" data-title="ov.title">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview</title>
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/overview.css">
+<script src="assets/site.js"></script>
+</head>
+<body>
+<header id="site-header"></header>
+<main>
+<div class="wrap">
+  <h1 data-i18n="ov.h1"></h1>
+  <p class="sub" data-i18n="ov.sub"></p>
+
+  <div class="card">
+    <h2 data-i18n="ov.person_h"></h2>
+    <div class="chips" id="persons"></div>
+    <div class="small" id="personinfo"></div>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="ov.flow_h"></h2>
+    <div class="legend" id="legend"></div>
+    <div class="flow" id="flow"></div>
+    <div class="ctrl" style="margin-top:10px">
+      <button id="prev" data-i18n="ov.prev"></button>
+      <button id="next" class="on" data-i18n="ov.next"></button>
+    </div>
+  </div>
+
+  <div class="card" id="detail"></div>
+
+  <div class="card">
+    <h2 data-i18n="ov.case_h"></h2>
+    <div class="small" data-i18n="ov.case_p"></div>
+    <div class="chips" id="studies"></div>
+    <div class="folder" id="folder"></div>
+  </div>
+</div>
+</main>
+<footer id="site-footer"></footer>
+<script src="assets/overview.js"></script>
+</body>
+</html>
