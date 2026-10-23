@@ -1,0 +1,26 @@
+/* Stil for results-sida */
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 14px;max-width:80ch}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:14px}
+.card h2{font-size:16px;margin:0 0 8px}
+.card h3{font-size:14px;margin:12px 0 6px;color:var(--muted);font-weight:600}
+.small{font-size:13px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:13px;background:var(--panel);cursor:pointer}
+.chip.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset}
+.pickbox{border-left:4px solid var(--good);background:var(--soft);border-radius:8px;padding:10px 12px;margin:10px 0}
+.pickbox b{font-size:15px}
+.kv{display:inline-block;margin:6px 16px 0 0;font-size:14px}
+.findings{margin:8px 0 0;padding-left:20px;max-width:90ch}
+.findings li{margin:4px 0}
+.resgrid{display:grid;grid-template-columns:minmax(280px,480px) 1fr;gap:16px;align-items:start}
+@media (max-width:1000px){.resgrid{grid-template-columns:minmax(0,1fr)}}
+.resgrid img{width:100%;height:auto;border:1px solid var(--line);border-radius:8px;background:#fcfcfb}
+.tabwrap{overflow-x:auto}
+table.rt{border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums;width:100%}
+table.rt th,table.rt td{border-bottom:1px solid var(--line);padding:4px 7px;text-align:right;white-space:nowrap}
+table.rt th{color:var(--muted);font-weight:600;position:sticky;top:0;background:var(--panel)}
+table.rt th .pr{font-size:10px}
+table.rt tr.pick td{background:var(--hard);font-weight:600}
+a.dl{font-size:13px}
+.soon{border-style:dashed;color:var(--muted)}

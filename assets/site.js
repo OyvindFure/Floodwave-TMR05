@@ -7,7 +7,8 @@ const PAGES = [
   { key:"ov", href:"overview.html" },
   { key:"box", href:"box-generator.html" },
   { key:"gdf", href:"gdf.html" },
-  { key:"nd", href:"nondim.html" }
+  { key:"nd", href:"nondim.html" },
+  { key:"res", href:"results.html" }
 ];
 
 const TR = {
@@ -18,6 +19,9 @@ const TR = {
     "nav.gdf":"GDF-fila",
     "nav.ov":"Oversikt",
     "nav.nd":"Frekvens",
+    "nav.res":"Results",
+    "card.res.t":"Results",
+    "card.res.d":"Resultat frå studiane: lengdestudien med figurar, tabellar og valt lengd. Meshstudien kjem etter kvart.",
     "card.nd.t":"Kvifor ikkje-dimensjonal frekvens?",
     "card.nd.d":"Sjå fire bokser med ulik breidde i bølgjer, og kvifor ω̂ gjer at dei kan samanliknast i same plott.",
     "card.gdf.t":"GDF-fila",
@@ -43,6 +47,9 @@ const TR = {
     "nav.gdf":"GDF file",
     "nav.ov":"Overview",
     "nav.nd":"Frequency",
+    "nav.res":"Results",
+    "card.res.t":"Results",
+    "card.res.d":"Results from the studies: the length study with figures, tables and the chosen length. The mesh study will follow.",
     "card.nd.t":"Why a non-dimensional frequency?",
     "card.nd.d":"Watch four boxes of different beam in waves, and why ω̂ lets them be compared in the same plot.",
     "card.gdf.t":"The GDF file",
