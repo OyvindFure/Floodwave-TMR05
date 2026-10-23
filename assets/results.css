@@ -26,3 +26,12 @@ a.dl{font-size:13px}
 .soon{border-style:dashed;color:var(--muted)}
 .pywin canvas{width:100%;display:block}
 .pywin{margin:0}
+.msgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:900px){.msgrid{grid-template-columns:minmax(0,1fr)}}
+.msgrid img{width:100%;height:auto;border:1px solid var(--line);border-radius:8px;background:#fcfcfb}
+.wvctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0}
+.wvctl input[type=range]{width:min(360px,60vw)}
+.wvcv{display:block;width:100%}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+b.warn{color:var(--badc)}
+.wvctl button{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:4px 14px;cursor:pointer}

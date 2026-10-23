@@ -6,7 +6,7 @@
 <title>Results</title>
 <link rel="stylesheet" href="assets/site.css">
 <link rel="stylesheet" href="assets/pyplot.css?v=8">
-<link rel="stylesheet" href="assets/results.css?v=8">
+<link rel="stylesheet" href="assets/results.css?v=10">
 <script src="assets/site.js?v=8"></script>
 </head>
 <body>
@@ -83,10 +83,35 @@
       </div>
     </div>
   </div>
+  <div class="card">
+    <h2 data-i18n="ms.h"></h2>
+    <p class="small" data-i18n="ms.p"></p>
+    <p class="small" data-i18n="ms.warn"></p>
+    <div class="msgrid">
+      <div><h3 data-i18n="ms.coef"></h3><img id="msimg1" alt=""></div>
+      <div><h3 data-i18n="ms.waves"></h3><img id="msimg2" alt=""></div>
+    </div>
+    <p class="small"><a class="dl" id="msdl" download data-i18n="rs.dl"></a></p>
+
+    <h2 style="margin-top:20px" data-i18n="wv.h"></h2>
+    <p class="small" data-i18n="wv.p"></p>
+    <div class="chips" id="wvdof"></div>
+    <div class="wvctl"><label for="wvom" data-i18n="wv.omega"></label> <input id="wvom" type="range"> <output id="wvomo"></output> <button type="button" id="wvplay"></button></div>
+    <div class="small" id="wvinfo"></div>
+    <div class="card" style="padding:0;overflow:hidden;margin:8px 0 4px"><canvas id="wvfield" class="wvcv"></canvas></div>
+    <div class="small" data-i18n="wv.field"></div>
+    <div class="card" style="padding:0;overflow:hidden;margin:8px 0 4px"><canvas id="wvlag" class="wvcv"></canvas></div>
+    <div class="small" data-i18n="wv.lag"></div>
+    <div class="card" style="padding:0;overflow:hidden;margin:8px 0 4px"><canvas id="wvts" class="wvcv"></canvas></div>
+    <div class="small" data-i18n="wv.ts"></div>
+    <div class="tabwrap" style="margin-top:10px" id="wvtab"></div>
+    <p class="small" data-i18n="wv.note"></p>
+  </div>
 </div>
 </main>
 <footer id="site-footer"></footer>
 <script src="assets/pyplot.js?v=8"></script>
-<script src="assets/results.js?v=9"></script>
+<script src="assets/results.js?v=10"></script>
+<script src="assets/wavesim.js?v=12"></script>
 </body>
 </html>
