@@ -187,5 +187,13 @@ function Plot(canvas,opt){
   return { S, draw, resize, set(o){ Object.assign(S,o); draw(); }, setHome(az,el){ home.az=az; home.el=el; S.az=az; S.el=el; draw(); } };
 }
 
-return { boxFull, boxQuarter, gdfLines, centroid, normal, Plot, f6, C10 };
+// prosjektcaset (B = 6 m, D = 1.5 m, omega_hat = 0.8): same mesh-regel som generate_length_study.py
+const LBS=[0.5,1,2,3,4,6,8,12,16,24,32];
+function projPreset(r){
+  const B=6, D=1.5, L=r*B, lam=Math.PI*B/(0.8*0.8);
+  const n=(len,ratio)=>Math.max(1,Math.ceil(len/(lam/ratio-1e-12)-1e-9));
+  const Nx=n(L/2,3), Ny=n(B/2,8), Nz=n(D,8);
+  return {full:[L,B,D,2*Nx,2*Ny,Nz], quarter:[L,B,D,Nx,Ny,Nz]};
+}
+return { LBS, projPreset, boxFull, boxQuarter, gdfLines, centroid, normal, Plot, f6, C10 };
 })();

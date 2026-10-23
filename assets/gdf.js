@@ -12,7 +12,7 @@ no:{
  "gd.e4":"<b>Berre våt overflate.</b> Det er ingen panel over vassflata. Med symmetri (ISX = ISY = 1) skal det heller ikkje vere panel på symmetriplana x = 0 og y = 0.",
  "gd.e5":"<b>Fila blir laga i to steg.</b> <code>box_generator</code> eller <code>boxq_generator</code> fyller tabellane X, Y og Z, og <code>writetoGDF</code> skriv dei ut rad for rad.",
  "gd.kind":"Boks:", "gd.full":"Heil boks (ISX = ISY = 0)", "gd.quarter":"Kvartboks (ISX = ISY = 1)",
- "gd.preset":"Døme:", "gd.p_proj":"Prosjektet, B = 6 m, L/B = 0,5", "gd.p_small":"Lite døme", "gd.p_main":"Frå Box_generator.py (10, 5, 2)",
+ "gd.preset":"Døme:", "gd.lb":"Lengd L/B i prosjektet (mesh frå λ/Δx = 3, λ/Δy = 8, λ/Δz = 8):", "gd.p_proj":"Prosjektet, B = 6 m", "gd.p_small":"Lite døme", "gd.p_main":"Frå Box_generator.py (10, 5, 2)",
  "gd.hint":"Merk: i boxq_generator er Nx og Ny talet på panel langs <i>halve</i> lengda og halve breidda.",
  "gd.file_h":"case.gdf",
  "gd.legend":"Blå = toppliner. Gul = fire hjørne i det valde panelet, og feit gul = det valde hjørnet. Klikk på ei linje.",
@@ -65,7 +65,7 @@ en:{
  "gd.e4":"<b>Wetted surface only.</b> There are no panels above the water surface. With symmetry (ISX = ISY = 1) there should not be panels on the symmetry planes x = 0 and y = 0 either.",
  "gd.e5":"<b>The file is made in two steps.</b> <code>box_generator</code> or <code>boxq_generator</code> fills the tables X, Y and Z, and <code>writetoGDF</code> writes them out row by row.",
  "gd.kind":"Box:", "gd.full":"Full box (ISX = ISY = 0)", "gd.quarter":"Quarter box (ISX = ISY = 1)",
- "gd.preset":"Example:", "gd.p_proj":"The project, B = 6 m, L/B = 0.5", "gd.p_small":"Small example", "gd.p_main":"From Box_generator.py (10, 5, 2)",
+ "gd.preset":"Example:", "gd.lb":"Length L/B in the project (mesh from λ/Δx = 3, λ/Δy = 8, λ/Δz = 8):", "gd.p_proj":"The project, B = 6 m", "gd.p_small":"Small example", "gd.p_main":"From Box_generator.py (10, 5, 2)",
  "gd.hint":"Note: in boxq_generator, Nx and Ny are the number of panels along <i>half</i> the length and half the beam.",
  "gd.file_h":"case.gdf",
  "gd.legend":"Blue = header lines. Yellow = the four corners of the selected panel, and bold yellow = the selected corner. Click a line.",
@@ -116,6 +116,7 @@ const PRESETS={
   small:{full:[4,2,1,4,2,2], quarter:[4,2,1,2,1,2]},
   main:{full:[10,5,2,10,5,4], quarter:[10,5,2,5,3,4]}
 };
+function presetOf(k){ return k==="proj"?PY.projPreset(S.lb):PRESETS[k]; }
 const HUE_F=[205,160,32,345,268], HUE_Q=[160,32,268];
 const CODE=[
  'def writetoGDF(X, Y, Z, Npanel, path, isx=0, isy=0):',
@@ -129,7 +130,7 @@ const CODE=[
  '                f.write(f"{X[i, j]:.6f} {Y[i, j]:.6f} {Z[i, j]:.6f} \\n")'
 ];
 const ORD=[0,3,2,1];
-const S={preset:"proj",quarter:true,sel:0,corner:0,hdr:-1,flip:false};
+const S={lb:0.5,preset:"proj",quarter:true,sel:0,corner:0,hdr:-1,flip:false};
 let D=null, LINES=[], plot=null;
 const num=x=>String(+(+x).toFixed(3));
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
@@ -139,7 +140,7 @@ function groupStarts(){
   const st=[], n=D.quarter?3:5; for(let g=0;g<n;g++){ const a=D.g.indexOf(g); const b=D.g.lastIndexOf(g); st.push([a,b]); } return st;
 }
 function build(){
-  const a=PRESETS[S.preset][S.quarter?"quarter":"full"];
+  const a=presetOf(S.preset)[S.quarter?"quarter":"full"];
   D=S.quarter?PY.boxQuarter(...a):PY.boxFull(...a);
   if(S.sel>=D.N) S.sel=D.N-1;
   LINES=PY.gdfLines(D,"case.gdf");
@@ -148,6 +149,9 @@ function build(){
   $("gd_I").max=D.N-1;
   document.querySelectorAll("#gd_kind .chip").forEach(c=>c.classList.toggle("on",(c.dataset.q==="1")===S.quarter));
   document.querySelectorAll("#gd_preset .chip").forEach(c=>c.classList.toggle("on",c.dataset.p===S.preset));
+  $("gd_lbwrap").style.display=S.preset==="proj"?"block":"none";
+  $("gd_lb").innerHTML=PY.LBS.map(r=>'<span class="chip'+(S.lb===r?' on':'')+'" data-r="'+r+'">L/B = '+r+'</span>').join("");
+  $("gd_lb").querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>{ S.lb=+c.dataset.r; S.sel=0; S.corner=0; S.hdr=-1; build(); }));
   $("gd_hint").style.display=S.quarter?"block":"none";
   plot.set({data:D,mirror:S.quarter,hue:S.quarter?HUE_Q:HUE_F});
   update();
@@ -217,7 +221,7 @@ function renderMap(){
   $("gd_map").innerHTML=h;
 }
 function renderCmp(){
-  const af=PRESETS[S.preset].full, aq=PRESETS[S.preset].quarter;
+  const af=presetOf(S.preset).full, aq=presetOf(S.preset).quarter;
   const F=PY.boxFull(...af), Q=PY.boxQuarter(...aq);
   const th=trArr("gd.cmp_th"), rows=trArr("gd.cmp_rows");
   const ratio=(Q.N/F.N);
