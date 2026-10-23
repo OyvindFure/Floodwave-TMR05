@@ -178,8 +178,7 @@ function Plot(canvas,opt){
   // venstre knapp: forskyv. Midtre knapp (musehjulet inne): roter. Hjulet: zoom. Dobbeltklikk: nullstill.
   let drag=null, mode=null;
   canvas.addEventListener("pointerdown",e=>{
-    if(e.button===1) e.preventDefault();
-    mode = e.button===1 ? "rot" : (e.button===0||e.button===2 ? "pan" : null); if(!mode) return;
+    mode = (e.button===1||e.button===2||(e.button===0&&e.shiftKey)) ? "rot" : (e.button===0 ? "pan" : null); if(!mode) return;
     canvas.setPointerCapture(e.pointerId); drag=[e.clientX,e.clientY]; canvas.style.cursor= mode==="rot"?"grabbing":"move"; });
   canvas.addEventListener("pointermove",e=>{ if(!drag) return;
     const dx=e.clientX-drag[0], dy=e.clientY-drag[1]; drag=[e.clientX,e.clientY];
