@@ -59,7 +59,7 @@ const tickTxt = v => String(+v.toFixed(3));
 function Plot(canvas,opt){
   const ctx=canvas.getContext("2d"); let W=0,H=0,DPR=1;
   const S={az:3,el:30,zoom:1,data:null,mode:"panels",labels:true,sel:-1,mirror:false,fill:false,axes:true,
-           px:0,py:0,eq:true,flip:false,arrowHead:null,hue:null};
+           px:0,py:0,stretch:false,arrowSize:null,eq:true,flip:false,arrowHead:null,hue:null};
   Object.assign(S,opt||{});
   const home={az:S.az,el:S.el};
   function resize(){ DPR=window.devicePixelRatio||1; const r=canvas.getBoundingClientRect(); W=r.width; H=r.height; canvas.width=Math.round(W*DPR); canvas.height=Math.round(H*DPR); draw(); }
@@ -72,10 +72,11 @@ function Plot(canvas,opt){
     }
     let size=0.6*Math.max(ptp(d.X),ptp(d.Y),ptp(d.Z));
     if(mir) size=0.6*Math.max(2*Math.max(...d.X.flat()),2*Math.max(...d.Y.flat()),ptp(d.Z));
+    if(S.arrowSize!=null) size=(typeof S.arrowSize==="function")?S.arrowSize(d):S.arrowSize;
     if(S.axes){ pts.push([0,0,0],[size,0,0],[0,size,0],[0,0,size]); }
     const lo=[1,2,3].map(()=>Infinity), hi=[1,2,3].map(()=>-Infinity);
     pts.forEach(p=>p.forEach((v,k)=>{ if(v<lo[k])lo[k]=v; if(v>hi[k])hi[k]=v; }));
-    if(S.eq){ const c=lo.map((v,k)=>(v+hi[k])/2), r=Math.max(...lo.map((v,k)=>hi[k]-v))/2*1.04||1; return {lo:c.map(v=>v-r),hi:c.map(v=>v+r),size}; }
+    if(S.eq && !S.stretch){ const c=lo.map((v,k)=>(v+hi[k])/2), r=Math.max(...lo.map((v,k)=>hi[k]-v))/2*1.04||1; return {lo:c.map(v=>v-r),hi:c.map(v=>v+r),size}; }
     const pad=lo.map((v,k)=>(hi[k]-v)*0.04||0.5);
     return {lo:lo.map((v,k)=>v-pad[k]),hi:hi.map((v,k)=>v+pad[k]),size};
   }
@@ -85,10 +86,12 @@ function Plot(canvas,opt){
     const d=S.data, B=bounds(), a=S.az*Math.PI/180, e=S.el*Math.PI/180;
     const ca=Math.cos(a), sa=Math.sin(a), ce=Math.cos(e), se=Math.sin(e);
     const mid=B.lo.map((v,k)=>(v+B.hi[k])/2), half=B.lo.map((v,k)=>(B.hi[k]-v)/2);
-    const R=Math.hypot(...half)||1, sc=Math.min(W,H)*0.5/R*0.80*S.zoom;
+    // stretch: tynne retningar blir skalerte opp slik at lange, smale skrog ikkje blir ein strek
+    const mh=Math.max(...half), fs = S.stretch ? half.map(h=>Math.max(1,0.4*mh/(h||1))) : [1,1,1];
+    const R=Math.hypot(...half.map((h,k)=>h*fs[k]))||1, sc=Math.min(W,H)*0.5/R*0.80*S.zoom;
     const cx=W/2+S.px, cy=H/2+4+S.py;
     // matplotlib bruker same boks-kantlengd uansett data, derfor normaliserer vi kvar akse til [-1,1]
-    const nrm = S.eq ? (p=>[p[0]-mid[0],p[1]-mid[1],p[2]-mid[2]]) : (p=>[(p[0]-mid[0])/half[0]*Math.max(...half),(p[1]-mid[1])/half[1]*Math.max(...half)*0.9,(p[2]-mid[2])/half[2]*Math.max(...half)*0.9]);
+    const nrm = S.stretch ? (p=>[(p[0]-mid[0])*fs[0],(p[1]-mid[1])*fs[1],(p[2]-mid[2])*fs[2]]) : S.eq ? (p=>[p[0]-mid[0],p[1]-mid[1],p[2]-mid[2]]) : (p=>[(p[0]-mid[0])/half[0]*Math.max(...half),(p[1]-mid[1])/half[1]*Math.max(...half)*0.9,(p[2]-mid[2])/half[2]*Math.max(...half)*0.9]);
     const pr = p=>{ const q=nrm(p); const h=-sa*q[0]+ca*q[1], u=-ca*se*q[0]-sa*se*q[1]+ce*q[2], dd=ca*ce*q[0]+sa*ce*q[1]+se*q[2]; return {x:cx+h*sc,y:cy-u*sc,d:dd}; };
     const V=[ca*ce,sa*ce,se];
     const corner=(ix,iy,iz)=>[ix?B.hi[0]:B.lo[0],iy?B.hi[1]:B.lo[1],iz?B.hi[2]:B.lo[2]];

@@ -6,8 +6,8 @@
 <title>The .gdf file</title>
 <link rel="stylesheet" href="assets/site.css">
 <link rel="stylesheet" href="assets/box.css">
-<link rel="stylesheet" href="assets/pyplot.css?v=5">
-<link rel="stylesheet" href="assets/gdf.css?v=5">
+<link rel="stylesheet" href="assets/pyplot.css?v=6">
+<link rel="stylesheet" href="assets/gdf.css?v=6">
 <script src="assets/site.js"></script>
 </head>
 <body>
@@ -38,6 +38,11 @@
     <div class="small" id="gd_hint" style="margin-top:6px" data-i18n="gd.hint"></div>
   </div>
 
+  <div class="card" id="gd_meshcard">
+    <h2 data-i18n="gd.mesh_h"></h2>
+    <div id="gd_mesh"></div>
+  </div>
+
   <div class="grid">
     <div>
       <div class="card">
@@ -62,6 +67,7 @@
         </div>
         <div class="row"><label for="gd_I" data-i18n="gd.panel_i"></label><input id="gd_I" type="range" min="0" max="2" value="0"><output id="gd_Io"></output></div>
         <div class="chips" id="gd_groups"></div>
+        <div class="chk"><input type="checkbox" id="gd_stretch" checked><label for="gd_stretch" data-i18n="gd.stretch"></label></div>
         <div class="chk"><input type="checkbox" id="gd_flip"><label for="gd_flip" data-i18n="gd.flip"></label></div>
         <div id="gd_flipmsg"></div>
         <div class="small" data-i18n="gd.hints"></div>
@@ -88,7 +94,7 @@
 </div>
 </main>
 <footer id="site-footer"></footer>
-<script src="assets/pyplot.js?v=5"></script>
-<script src="assets/gdf.js?v=5"></script>
+<script src="assets/pyplot.js?v=6"></script>
+<script src="assets/gdf.js?v=6"></script>
 </body>
 </html>

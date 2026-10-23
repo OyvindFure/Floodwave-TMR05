@@ -23,6 +23,13 @@ no:{
  "gd.flip_ok":"Hjørna går 1, 2, 3, 4 mot klokka sett utanfrå, og normalen (grøn pil) peikar <b>ut</b> av skroget. Slik vil WAMIT ha det.",
  "gd.flip_bad":"Hjørna står i omvend rekkjefølgje (1, 4, 3, 2). Normalen (raud pil) peikar <b>inn</b> i skroget, og WAMIT ville tolka panelet som vendt feil veg.",
  "gd.corner_tag":"hjørne {c}","gd.corner":"hjørne {n}","gd.of":"{a} av {b}",
+ "gd.stretch":"Strekk ut tynne retningar (lange skrog blir lettare å sjå)",
+ "gd.mesh_h":"Frå λ/Δ til heile panel (prosjektet)",
+ "gd.mesh_intro":"Utgangspunkt: ω̂ = 0,8 og B = 6 m gir λ = πB/ω̂² = <b>{lam} m</b>. Meshregelen frå oppgåva er λ/Δx = 3, λ/Δy = 8 og λ/Δz = 8. I kvartboksen gjeld lengda <b>halve</b> L og halve B, så Nx og Ny blir talet på panel langs halve sida.",
+ "gd.mesh_th":["Retning","Lengd å dele opp","Mål λ/Δ","Største Δ = λ/mål","Nøyaktig N = lengd/Δ","Rundar opp til N","Faktisk Δ = lengd/N","Faktisk λ/Δ"],
+ "gd.mesh_dirs":["x (halve L)","y (halve B)","z (D)"],
+ "gd.mesh_note":"Generatoren rundar <b>alltid opp</b> (ceil), fordi N må vere eit heilt tal og ein avrunding nedover ville gjort panela større enn λ/mål. Opprunding gir litt mindre panel, så kravet er alltid oppfylt: faktisk λ/Δ er lik eller større enn målet. Totalt blir det {n} panel i kvartboksen ({nx}·{ny} + {nx}·{nz} + {ny}·{nz}).",
+ "gd.mesh_only":"Denne tabellen gjeld prosjektcaset. Vel «Prosjektet, B = 6 m» over for å sjå han.",
  "gd.hints":"Venstre museknapp: forskyv modellen. Hald musehjulet inne og dra (eller høgre knapp, eller Shift + venstre knapp): roter. Rull for å zoome (opp til 40 gongar), dobbeltklikk for å nullstille. I kvartboksen viser dei stipla panela kva WAMIT speglar seg til.",
  "gd.pi":"Panel {i} av {n}, frå flate {g}: {name}",
  "gd.code_h":"Python: writetoGDF",
@@ -76,6 +83,13 @@ en:{
  "gd.flip_ok":"The corners run 1, 2, 3, 4 counterclockwise seen from outside, and the normal (green arrow) points <b>out of</b> the hull. This is what WAMIT wants.",
  "gd.flip_bad":"The corners are in reverse order (1, 4, 3, 2). The normal (red arrow) points <b>into</b> the hull, and WAMIT would read the panel as facing the wrong way.",
  "gd.corner_tag":"corner {c}","gd.corner":"corner {n}","gd.of":"{a} of {b}",
+ "gd.stretch":"Stretch thin directions (long hulls are easier to see)",
+ "gd.mesh_h":"From λ/Δ to whole panels (the project)",
+ "gd.mesh_intro":"Starting point: ω̂ = 0.8 and B = 6 m give λ = πB/ω̂² = <b>{lam} m</b>. The mesh rule from the assignment is λ/Δx = 3, λ/Δy = 8 and λ/Δz = 8. In the quarter box the length is <b>half</b> of L and half of B, so Nx and Ny are the number of panels along half the side.",
+ "gd.mesh_th":["Direction","Length to divide","Target λ/Δ","Largest Δ = λ/target","Exact N = length/Δ","Rounded up to N","Actual Δ = length/N","Actual λ/Δ"],
+ "gd.mesh_dirs":["x (half L)","y (half B)","z (D)"],
+ "gd.mesh_note":"The generator <b>always rounds up</b> (ceil), because N must be a whole number and rounding down would make the panels larger than λ/target. Rounding up gives slightly smaller panels, so the requirement is always met: the actual λ/Δ is equal to or larger than the target. In total the quarter box has {n} panels ({nx}·{ny} + {nx}·{nz} + {ny}·{nz}).",
+ "gd.mesh_only":"This table applies to the project case. Choose \"The project, B = 6 m\" above to see it.",
  "gd.hints":"Left mouse button: pan the model. Hold the mouse wheel in and drag (or right button, or Shift + left button): rotate. Scroll to zoom (up to 40 times), double click to reset. In the quarter box the dashed panels show what WAMIT mirrors to.",
  "gd.pi":"Panel {i} of {n}, from face {g}: {name}",
  "gd.code_h":"Python: writetoGDF",
@@ -238,6 +252,21 @@ function renderCmp(){
   h+='<p class="small" style="margin-top:8px">'+T("gd.cmp_note",{r:rtxt})+'</p>';
   $("gd_cmp").innerHTML=h;
 }
+function renderMesh(){
+  const el=$("gd_mesh");
+  if(S.preset!=="proj"){ el.innerHTML='<p class="small" style="margin:0">'+T("gd.mesh_only")+'</p>'; return; }
+  const B=6, Dd=1.5, L=S.lb*B, lam=Math.PI*B/(0.8*0.8);
+  const fm=(x,d)=>{ const s=(+x).toFixed(d===undefined?2:d); return SITE.lang==="no"?s.replace(".",","):s; };
+  const rows=[[L/2,3],[B/2,8],[Dd,8]];
+  const th=trArr("gd.mesh_th"), dn=trArr("gd.mesh_dirs"); const Ns=[];
+  let h='<p style="margin:0 0 8px">'+T("gd.mesh_intro",{lam:fm(lam)})+'</p><div style="overflow:auto"><table class="cmp"><tr>'+th.map(x=>'<th>'+x+'</th>').join("")+'</tr>';
+  rows.forEach(([len,r],k)=>{
+    const maxd=lam/r, ex=len/maxd, N=Math.max(1,Math.ceil(ex-1e-9)), d=len/N; Ns.push(N);
+    h+='<tr><th>'+dn[k]+'</th><td>'+fm(len)+' m</td><td>'+r+'</td><td>'+fm(maxd)+' m</td><td>'+fm(ex,3)+'</td><td><b>'+N+'</b></td><td>'+fm(d)+' m</td><td>'+fm(lam/d)+'</td></tr>';
+  });
+  h+='</table></div><p class="small" style="margin:8px 0 0">'+T("gd.mesh_note",{n:Ns[0]*Ns[1]+Ns[0]*Ns[2]+Ns[1]*Ns[2],nx:Ns[0],ny:Ns[1],nz:Ns[2]})+'</p>';
+  el.innerHTML=h;
+}
 function update(){
   const i=S.sel, N=D.N;
   $("gd_I").value=i; $("gd_Io").textContent=T("gd.of",{a:i+1,b:N});
@@ -247,16 +276,17 @@ function update(){
   $("gd_groups").querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>{ S.sel=+c.dataset.a; S.hdr=-1; update(); }));
   $("gd_flipmsg").innerHTML='<div class="msg '+(S.flip?'bad':'ok')+'">'+T(S.flip?"gd.flip_bad":"gd.flip_ok")+'</div>';
   plot.set({sel:i,flip:S.flip});
-  renderList(); renderWhy(); renderCode(); renderMap(); renderCmp();
+  renderList(); renderWhy(); renderCode(); renderMap(); renderCmp(); renderMesh();
 }
 function init(){
-  plot=PY.Plot($("gd_cv"),{az:-55,el:25,mode:"file",eq:true,axes:true,mirror:true});
+  plot=PY.Plot($("gd_cv"),{az:-55,el:25,mode:"file",eq:true,axes:true,mirror:true,stretch:true,arrowSize:d=>Math.max(1.5*Math.max(d.quarter?2*Math.max(...d.Y.flat()):Math.max(...d.Y.flat())*2,(Math.max(...d.Z.flat().map(Math.abs)))),1)});
   plot.setHome(-55,25);
   document.querySelectorAll("#gd_kind .chip").forEach(c=>c.addEventListener("click",()=>{ S.quarter=c.dataset.q==="1"; S.sel=0; S.corner=0; S.hdr=-1; build(); }));
   document.querySelectorAll("#gd_preset .chip").forEach(c=>c.addEventListener("click",()=>{ S.preset=c.dataset.p; S.sel=0; S.corner=0; S.hdr=-1; build(); }));
   $("gd_prev").addEventListener("click",()=>{ S.sel=Math.max(0,S.sel-1); S.hdr=-1; update(); });
   $("gd_next").addEventListener("click",()=>{ S.sel=Math.min(D.N-1,S.sel+1); S.hdr=-1; update(); });
   $("gd_I").addEventListener("input",()=>{ S.sel=+$("gd_I").value; S.hdr=-1; update(); });
+  $("gd_stretch").addEventListener("change",()=>{ plot.set({stretch:$("gd_stretch").checked}); });
   $("gd_flip").addEventListener("change",()=>{ S.flip=$("gd_flip").checked; update(); });
   document.addEventListener("keydown",e=>{ if(e.target.tagName==="INPUT"&&e.target.type==="range") return; if(e.key==="ArrowRight"){ S.sel=Math.min(D.N-1,S.sel+1); S.hdr=-1; update(); } if(e.key==="ArrowLeft"){ S.sel=Math.max(0,S.sel-1); S.hdr=-1; update(); } });
   plot.resize(); build();
