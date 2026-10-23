@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Results</title>
 <link rel="stylesheet" href="assets/site.css">
-<link rel="stylesheet" href="assets/results.css?v=7">
-<script src="assets/site.js?v=7"></script>
+<link rel="stylesheet" href="assets/pyplot.css?v=8">
+<link rel="stylesheet" href="assets/results.css?v=8">
+<script src="assets/site.js?v=8"></script>
 </head>
 <body>
 <header id="site-header"></header>
@@ -29,6 +30,14 @@
       <li data-i18n="rs.f3"></li>
     </ul>
 
+    <h3 data-i18n="rs.v3_h"></h3>
+    <p class="small" data-i18n="rs.v3_len"></p>
+    <div class="chips" id="l3chips"></div>
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:6px">
+      <figure class="pywin" style="border:0;border-radius:0;margin:0"><div class="tb"><i></i><i></i><i></i><span data-i18n="rs.v3_h"></span></div><canvas id="l3cv"></canvas></figure>
+    </div>
+    <div class="small" id="l3info"></div>
+    <div class="small"><label><input type="checkbox" id="l3stretch" checked> <span data-i18n="rs.v3_stretch"></span></label> &nbsp; <span data-i18n="rs.v3_hint"></span></div>
     <h3 data-i18n="rs.dof"></h3>
     <div class="chips" id="dofchips"></div>
 
@@ -42,13 +51,42 @@
     </div>
   </div>
 
-  <div class="card soon">
+  <div class="card">
     <h2 data-i18n="rs.mesh_h"></h2>
     <p class="small" data-i18n="rs.mesh_p"></p>
+    <div class="pickbox">
+      <b data-i18n="rs.mpick_h"></b>
+      <div class="small" data-i18n="rs.mpick_p"></div>
+      <div id="mpickdev"></div>
+    </div>
+    <ul class="findings">
+      <li data-i18n="rs.mf1"></li>
+      <li data-i18n="rs.mf2"></li>
+      <li data-i18n="rs.mf3"></li>
+    </ul>
+    <h3 data-i18n="rs.v3_h"></h3>
+    <p class="small" data-i18n="rs.v3_mesh"></p>
+    <div class="chips" id="m3chips"></div>
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:6px">
+      <figure class="pywin" style="border:0;border-radius:0;margin:0"><div class="tb"><i></i><i></i><i></i><span data-i18n="rs.v3_h"></span></div><canvas id="m3cv"></canvas></figure>
+    </div>
+    <div class="small" id="m3info"></div>
+    <div class="small"><label><input type="checkbox" id="m3stretch" checked> <span data-i18n="rs.v3_stretch"></span></label> &nbsp; <span data-i18n="rs.v3_hint"></span></div>
+    <h3 data-i18n="rs.dof"></h3>
+    <div class="chips" id="mdofchips"></div>
+    <div class="resgrid">
+      <div><img id="meshimg" alt=""></div>
+      <div>
+        <h3 data-i18n="rs.tab"></h3>
+        <div class="tabwrap" id="meshtab"></div>
+        <p class="small"><span data-i18n="rs.mhl"></span> <a class="dl" id="mdl" download data-i18n="rs.dl"></a></p>
+      </div>
+    </div>
   </div>
 </div>
 </main>
 <footer id="site-footer"></footer>
-<script src="assets/results.js?v=7"></script>
+<script src="assets/pyplot.js?v=8"></script>
+<script src="assets/results.js?v=9"></script>
 </body>
 </html>

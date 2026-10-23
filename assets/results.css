@@ -24,3 +24,5 @@ table.rt th .pr{font-size:10px}
 table.rt tr.pick td{background:var(--hard);font-weight:600}
 a.dl{font-size:13px}
 .soon{border-style:dashed;color:var(--muted)}
+.pywin canvas{width:100%;display:block}
+.pywin{margin:0}
