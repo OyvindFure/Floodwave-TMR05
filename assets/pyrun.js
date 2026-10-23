@@ -4,7 +4,7 @@
 SITE.add({
 no:{
  "pr.h":"Slik ser det ut når du køyrer Box_generator.py",
- "pr.intro":"Nederst i Box_generator.py ligg eit testprogram. Når du køyrer fila (til dømes Run i VS Code) skjer tre ting: koden skriv ut talet på panel, python opnar to figurvindauge, og fila <code>BOXgenerated.gdf</code> blir skriven. Her ser du det same. Dra i figurane for å rotere dei.",
+ "pr.intro":"Nederst i Box_generator.py ligg eit testprogram. Når du køyrer fila (til dømes Run i VS Code) skjer tre ting: koden skriv ut talet på panel, python opnar to figurvindauge, og fila <code>BOXgenerated.gdf</code> blir skriven. Her ser du det same. Venstre museknapp forskyv figuren, og hjulet inne (dra) roterer han.",
  "pr.kind":"Boks:", "pr.full":"Heil boks (box_generator)", "pr.quarter":"Kvartboks (boxq_generator)",
  "pr.preset":"Døme:", "pr.p_main":"Frå fila (10, 5, 2)", "pr.p_small":"Lite døme", "pr.p_proj":"Prosjektet, L/B = 0,5",
  "pr.labels":"Vis panelnummer i figur 2",
@@ -23,7 +23,7 @@ no:{
 },
 en:{
  "pr.h":"What it looks like when you run Box_generator.py",
- "pr.intro":"At the bottom of Box_generator.py there is a test program. When you run the file (for example Run in VS Code) three things happen: the code prints the number of panels, python opens two figure windows, and the file <code>BOXgenerated.gdf</code> is written. Here you see the same. Drag the figures to rotate them.",
+ "pr.intro":"At the bottom of Box_generator.py there is a test program. When you run the file (for example Run in VS Code) three things happen: the code prints the number of panels, python opens two figure windows, and the file <code>BOXgenerated.gdf</code> is written. Here you see the same. Left mouse button pans the figure, and the wheel pressed in (drag) rotates it.",
  "pr.kind":"Box:", "pr.full":"Full box (box_generator)", "pr.quarter":"Quarter box (boxq_generator)",
  "pr.preset":"Example:", "pr.p_main":"From the file (10, 5, 2)", "pr.p_small":"Small example", "pr.p_proj":"The project, L/B = 0.5",
  "pr.labels":"Show panel numbers in figure 2",

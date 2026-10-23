@@ -59,7 +59,7 @@ const tickTxt = v => String(+v.toFixed(3));
 function Plot(canvas,opt){
   const ctx=canvas.getContext("2d"); let W=0,H=0,DPR=1;
   const S={az:3,el:30,zoom:1,data:null,mode:"panels",labels:true,sel:-1,mirror:false,fill:false,axes:true,
-           eq:true,flip:false,arrowHead:null,hue:null};
+           px:0,py:0,eq:true,flip:false,arrowHead:null,hue:null};
   Object.assign(S,opt||{});
   const home={az:S.az,el:S.el};
   function resize(){ DPR=window.devicePixelRatio||1; const r=canvas.getBoundingClientRect(); W=r.width; H=r.height; canvas.width=Math.round(W*DPR); canvas.height=Math.round(H*DPR); draw(); }
@@ -86,7 +86,7 @@ function Plot(canvas,opt){
     const ca=Math.cos(a), sa=Math.sin(a), ce=Math.cos(e), se=Math.sin(e);
     const mid=B.lo.map((v,k)=>(v+B.hi[k])/2), half=B.lo.map((v,k)=>(B.hi[k]-v)/2);
     const R=Math.hypot(...half)||1, sc=Math.min(W,H)*0.5/R*0.80*S.zoom;
-    const cx=W/2, cy=H/2+4;
+    const cx=W/2+S.px, cy=H/2+4+S.py;
     // matplotlib bruker same boks-kantlengd uansett data, derfor normaliserer vi kvar akse til [-1,1]
     const nrm = S.eq ? (p=>[p[0]-mid[0],p[1]-mid[1],p[2]-mid[2]]) : (p=>[(p[0]-mid[0])/half[0]*Math.max(...half),(p[1]-mid[1])/half[1]*Math.max(...half)*0.9,(p[2]-mid[2])/half[2]*Math.max(...half)*0.9]);
     const pr = p=>{ const q=nrm(p); const h=-sa*q[0]+ca*q[1], u=-ca*se*q[0]-sa*se*q[1]+ce*q[2], dd=ca*ce*q[0]+sa*ce*q[1]+se*q[2]; return {x:cx+h*sc,y:cy-u*sc,d:dd}; };
@@ -175,16 +175,27 @@ function Plot(canvas,opt){
     }
   }
   // ---------- mus ----------
-  let drag=null;
-  canvas.addEventListener("pointerdown",e=>{ canvas.setPointerCapture(e.pointerId); drag=[e.clientX,e.clientY]; canvas.style.cursor="grabbing"; });
-  canvas.addEventListener("pointermove",e=>{ if(!drag) return; S.az-=(e.clientX-drag[0])*.5; S.el=Math.max(-90,Math.min(90,S.el+(e.clientY-drag[1])*.5)); drag=[e.clientX,e.clientY]; draw(); if(S.onview) S.onview(S); });
-  const end=()=>{ drag=null; canvas.style.cursor="grab"; };
+  // venstre knapp: forskyv. Midtre knapp (musehjulet inne): roter. Hjulet: zoom. Dobbeltklikk: nullstill.
+  let drag=null, mode=null;
+  canvas.addEventListener("pointerdown",e=>{
+    if(e.button===1) e.preventDefault();
+    mode = e.button===1 ? "rot" : (e.button===0||e.button===2 ? "pan" : null); if(!mode) return;
+    canvas.setPointerCapture(e.pointerId); drag=[e.clientX,e.clientY]; canvas.style.cursor= mode==="rot"?"grabbing":"move"; });
+  canvas.addEventListener("pointermove",e=>{ if(!drag) return;
+    const dx=e.clientX-drag[0], dy=e.clientY-drag[1]; drag=[e.clientX,e.clientY];
+    if(mode==="rot"){ S.az-=dx*.5; S.el=Math.max(-90,Math.min(90,S.el+dy*.5)); }
+    else { S.px+=dx; S.py+=dy; }
+    draw(); if(S.onview) S.onview(S); });
+  const end=()=>{ drag=null; mode=null; canvas.style.cursor="move"; };
   canvas.addEventListener("pointerup",end); canvas.addEventListener("pointercancel",end);
-  canvas.addEventListener("wheel",e=>{ e.preventDefault(); S.zoom=Math.min(4,Math.max(.4,S.zoom*Math.exp(-e.deltaY*.0012))); draw(); },{passive:false});
-  canvas.addEventListener("dblclick",()=>{ S.az=home.az; S.el=home.el; S.zoom=1; draw(); if(S.onview) S.onview(S); });
+  canvas.addEventListener("mousedown",e=>{ if(e.button===1) e.preventDefault(); });
+  canvas.addEventListener("auxclick",e=>e.preventDefault());
+  canvas.addEventListener("contextmenu",e=>e.preventDefault());
+  canvas.addEventListener("wheel",e=>{ e.preventDefault(); S.zoom=Math.min(40,Math.max(.4,S.zoom*Math.exp(-e.deltaY*.0012))); draw(); },{passive:false});
+  canvas.addEventListener("dblclick",()=>{ S.az=home.az; S.el=home.el; S.zoom=1; S.px=0; S.py=0; draw(); if(S.onview) S.onview(S); });
   window.addEventListener("resize",resize);
-  canvas.style.cursor="grab"; canvas.style.touchAction="none";
-  return { S, draw, resize, set(o){ Object.assign(S,o); draw(); }, setHome(az,el){ home.az=az; home.el=el; S.az=az; S.el=el; draw(); } };
+  canvas.style.cursor="move"; canvas.style.touchAction="none";
+  return { S, draw, resize, set(o){ Object.assign(S,o); draw(); }, setHome(az,el){ home.az=az; home.el=el; S.az=az; S.el=el; S.px=0; S.py=0; draw(); } };
 }
 
 // prosjektcaset (B = 6 m, D = 1.5 m, omega_hat = 0.8): same mesh-regel som generate_length_study.py
