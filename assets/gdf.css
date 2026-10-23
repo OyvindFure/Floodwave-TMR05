@@ -1,0 +1,17 @@
+/* Stil som berre gjeld .gdf-sida */
+button{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:5px 12px;cursor:pointer}
+button:disabled{opacity:.45;cursor:default}
+.gdlist{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:6px 0;font:12.5px/1.6 ui-monospace,Consolas,Menlo,monospace;overflow:auto}
+.gl{display:flex;white-space:pre;cursor:pointer;padding:0 10px 0 0;border-left:4px solid transparent}
+.gl .ln{flex:0 0 36px;text-align:right;color:var(--muted);padding-right:10px;user-select:none}
+.gl .tag{margin-left:14px;color:var(--muted);font-size:11.5px}
+.gl.hdr{background:var(--soft)}
+.gl.pan{background:var(--hard)}
+.gl.cur{background:var(--hard);font-weight:700;border-left-color:#e0a800;outline:1px solid #e0a800}
+.gl.hdr.cur{background:var(--soft);border-left-color:var(--accent);outline-color:var(--accent)}
+.gl:hover{filter:brightness(.96)}
+.gl.dots{cursor:default;color:var(--muted)}
+.why p{margin:4px 0}
+.cmp{width:100%;border-collapse:collapse;font-size:13.5px}
+.cmp th,.cmp td{border:1px solid var(--line);padding:5px 9px;text-align:left;vertical-align:top}
+.cmp th{background:var(--code-bg)}

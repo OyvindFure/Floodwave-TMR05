@@ -6,6 +6,7 @@
 const PAGES = [
   { key:"ov", href:"overview.html" },
   { key:"box", href:"box-generator.html" },
+  { key:"gdf", href:"gdf.html" },
   { key:"nd", href:"nondim.html" }
 ];
 
@@ -14,10 +15,13 @@ const TR = {
     "brand.sub":"TMR05 potensialstrøyming",
     "nav.home":"Forside",
     "nav.box":"Box generator",
+    "nav.gdf":"GDF-fila",
     "nav.ov":"Oversikt",
     "nav.nd":"Frekvens",
     "card.nd.t":"Kvifor ikkje-dimensjonal frekvens?",
     "card.nd.d":"Sjå fire bokser med ulik breidde i bølgjer, og kvifor ω̂ gjer at dei kan samanliknast i same plott.",
+    "card.gdf.t":"GDF-fila",
+    "card.gdf.d":"Kva som står i case.gdf, linje for linje, og korleis Box_generator.py og writetoGDF lagar kvar linje. Med 3D-modell av kvart panel.",
     "card.ov.t":"Slik køyrer oppsettet",
     "card.ov.d":"Frå config.py til ferdige figurar: kva skript som køyrer, kva du gjer sjølv, og kva som blir laga i kvar mappe.",
     "tool.lang":"Språk",
@@ -36,10 +40,13 @@ const TR = {
     "brand.sub":"TMR05 potential flow",
     "nav.home":"Home",
     "nav.box":"Box generator",
+    "nav.gdf":"GDF file",
     "nav.ov":"Overview",
     "nav.nd":"Frequency",
     "card.nd.t":"Why a non-dimensional frequency?",
     "card.nd.d":"Watch four boxes of different beam in waves, and why ω̂ lets them be compared in the same plot.",
+    "card.gdf.t":"The GDF file",
+    "card.gdf.d":"What is in case.gdf, line by line, and how Box_generator.py and writetoGDF create each line. With a 3D model of each panel.",
     "card.ov.t":"How the setup runs",
     "card.ov.d":"From config.py to finished figures: which scripts run, what you do yourself, and what is created in each folder.",
     "tool.lang":"Language",

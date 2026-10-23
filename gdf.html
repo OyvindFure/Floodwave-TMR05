@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="nn" data-title="gd.title">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The .gdf file</title>
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/box.css">
+<link rel="stylesheet" href="assets/pyplot.css">
+<link rel="stylesheet" href="assets/gdf.css">
+<script src="assets/site.js"></script>
+</head>
+<body>
+<header id="site-header"></header>
+<main>
+<div class="wrap">
+  <h1 data-i18n="gd.h1"></h1>
+  <p class="sub" data-i18n="gd.sub"></p>
+
+  <div class="card essence">
+    <h2 data-i18n="gd.ess_h"></h2>
+    <ol>
+      <li data-i18n="gd.e1"></li>
+      <li data-i18n="gd.e2"></li>
+      <li data-i18n="gd.e3"></li>
+      <li data-i18n="gd.e4"></li>
+      <li data-i18n="gd.e5"></li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <div class="small" data-i18n="gd.kind"></div>
+    <div class="chips" id="gd_kind"><span class="chip" data-q="0" data-i18n="gd.full"></span><span class="chip" data-q="1" data-i18n="gd.quarter"></span></div>
+    <div class="small" data-i18n="gd.preset"></div>
+    <div class="chips" id="gd_preset"><span class="chip" data-p="proj" data-i18n="gd.p_proj"></span><span class="chip" data-p="small" data-i18n="gd.p_small"></span><span class="chip" data-p="main" data-i18n="gd.p_main"></span></div>
+    <div class="pycall" id="gd_call"></div>
+    <div class="small" id="gd_hint" style="margin-top:6px" data-i18n="gd.hint"></div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h2 data-i18n="gd.file_h"></h2>
+        <div class="gdlist" id="gd_list"></div>
+        <div class="legendnote" data-i18n="gd.legend"></div>
+      </div>
+      <div class="card">
+        <h2 data-i18n="gd.why_h"></h2>
+        <div id="gd_why"></div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <figure class="pywin" style="border:0;border-radius:0"><div class="tb"><i></i><i></i><i></i><span data-i18n="gd.win"></span></div><canvas id="gd_cv"></canvas></figure>
+      </div>
+      <div class="card">
+        <div class="ctrl">
+          <button type="button" id="gd_prev" data-i18n="gd.prev"></button>
+          <button type="button" id="gd_next" data-i18n="gd.next"></button>
+          <span class="small" id="gd_pi"></span>
+        </div>
+        <div class="row"><label for="gd_I" data-i18n="gd.panel_i"></label><input id="gd_I" type="range" min="0" max="2" value="0"><output id="gd_Io"></output></div>
+        <div class="chips" id="gd_groups"></div>
+        <div class="chk"><input type="checkbox" id="gd_flip"><label for="gd_flip" data-i18n="gd.flip"></label></div>
+        <div id="gd_flipmsg"></div>
+        <div class="small" data-i18n="gd.hints"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2 data-i18n="gd.code_h"></h2>
+      <div class="code" id="gd_code" style="max-height:none"></div>
+      <div class="legendnote" data-i18n="gd.code_leg"></div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="gd.map_h"></h2>
+      <div id="gd_map"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="gd.cmp_h"></h2>
+    <div id="gd_cmp"></div>
+  </div>
+</div>
+</main>
+<footer id="site-footer"></footer>
+<script src="assets/pyplot.js"></script>
+<script src="assets/gdf.js"></script>
+</body>
+</html>

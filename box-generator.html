@@ -6,6 +6,7 @@
 <title>Box generator</title>
 <link rel="stylesheet" href="assets/site.css">
 <link rel="stylesheet" href="assets/box.css">
+<link rel="stylesheet" href="assets/pyplot.css">
 <script src="assets/site.js"></script>
 </head>
 <body>
@@ -25,6 +26,30 @@
       <li data-i18n="bx.e5"></li>
     </ol>
   </div>
+
+  <div class="card" id="pyrun">
+    <h2 data-i18n="pr.h"></h2>
+    <p style="margin:0 0 8px" data-i18n="pr.intro"></p>
+    <div class="small" data-i18n="pr.kind"></div>
+    <div class="chips" id="pr_kind"><span class="chip" data-q="0" data-i18n="pr.full"></span><span class="chip" data-q="1" data-i18n="pr.quarter"></span></div>
+    <div class="small" data-i18n="pr.preset"></div>
+    <div class="chips" id="pr_preset"><span class="chip" data-p="main" data-i18n="pr.p_main"></span><span class="chip" data-p="small" data-i18n="pr.p_small"></span><span class="chip" data-p="proj" data-i18n="pr.p_proj"></span></div>
+    <div class="small" data-i18n="pr.call"></div>
+    <div class="pycall" id="pr_call"></div>
+    <div class="small" id="pr_qhint" style="display:none;margin-bottom:6px" data-i18n="pr.quarterhint"></div>
+    <div class="small" data-i18n="pr.term"></div>
+    <pre class="term" id="pr_term"></pre>
+    <div class="chk"><input type="checkbox" id="pr_labels" checked><label for="pr_labels" data-i18n="pr.labels"></label></div>
+    <div class="pywins">
+      <div><figure class="pywin"><div class="tb"><i></i><i></i><i></i><span data-i18n="pr.win1"></span></div><canvas id="pr_cv1"></canvas></figure><div class="pycap" data-i18n="pr.cap1"></div></div>
+      <div><figure class="pywin"><div class="tb"><i></i><i></i><i></i><span data-i18n="pr.win2"></span></div><canvas id="pr_cv2"></canvas></figure><div class="pycap" data-i18n="pr.cap2"></div></div>
+    </div>
+    <div class="infobox" id="pr_qnote" style="display:none" data-i18n="pr.q_note"></div>
+    <div class="small" style="margin-top:10px" data-i18n="pr.file"></div>
+    <pre class="mono" id="pr_gdf"></pre>
+    <div class="small" id="pr_filenote"></div>
+  </div>
+
 
   <div class="grid">
     <div>
@@ -106,5 +131,7 @@
 </main>
 <footer id="site-footer"></footer>
 <script src="assets/box-generator.js"></script>
+<script src="assets/pyplot.js"></script>
+<script src="assets/pyrun.js"></script>
 </body>
 </html>
