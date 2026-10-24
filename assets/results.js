@@ -38,10 +38,10 @@ no:{
  "rs.v3_info_mesh":"Mesh {k}, mål λ/Δ = ({a}, {b}, {c}). Panel: Nx = {nx}, Ny = {ny}, Nz = {nz}, totalt {n} i kvartboksen.",
  "rs.mesh_h":"Mesh study",
  "rs.mesh_p":"Same boks (L/B = 24, ω̂ = 0.8) med seks meshtettleikar. x, y og z er forfina saman, og x-aksen er λ/Δx. Mål for kvar mesh står i tabellen under.",
- "rs.mpick_h":"Valt mesh: nr. 4 (λ/Δx = 24)",
- "rs.mpick_p":"677 paneler i kvartboksen. Endring frå mesh 3 til 4, og frå 4 til 5:",
- "rs.mf1":"Endringa frå førre mesh blir mindre for kvart steg. Frå λ/Δx = 24 er ho under omtrent 1 % for a og b (heave og sway), og ζ endrar seg under 0,4 % mellom to mesh.",
- "rs.mf2":"Mesh 4 ligg innanfor omtrent 1 % av det finaste meshet (λ/Δx = 48) for heave (a +0,97 %, b −0,79 %), og litt over 1 % for sway-demping (a +0,85 %, b −1,46 %).",
+ "rs.mpick_h":"Valt mesh: nr. 5 (λ/Δx = 36)",
+ "rs.mpick_p":"1385 paneler i kvartboksen. Endring frå mesh 4 til 5, og frå 5 til 6:",
+ "rs.mf1":"Endringa frå førre mesh blir mindre for kvart steg. Frå λ/Δx = 36 er ho under 1 % for a og b (heave og sway), og ζ endrar seg under 0,4 % mellom to mesh.",
+ "rs.mf2":"Mesh 5 ligg innanfor 1 % av det finaste meshet (λ/Δx = 48) for både heave (a +0,42 %, b −0,32 %) og sway (a +0,41 %, b +0,65 %).",
  "rs.mf3":"Alle fem sondane flyttar seg likt og jamt, så ζ svingar ikkje slik som i lengdestudien. Alle retningar er forfina saman, så vi veit ikkje kva retning som styrer endringa. Dei grovaste meshane har berre 1 til 2 paneler over halve breidda og over djupgangen.",
  "rs.mhl":"Rada for valt mesh er markert. Δ er endring frå førre mesh i prosent. Paneler er talet i kvartboksen."
 },
@@ -75,10 +75,10 @@ en:{
  "rs.v3_info_mesh":"Mesh {k}, target λ/Δ = ({a}, {b}, {c}). Panels: Nx = {nx}, Ny = {ny}, Nz = {nz}, total {n} in the quarter box.",
  "rs.mesh_h":"Mesh study",
  "rs.mesh_p":"The same box (L/B = 24, ω̂ = 0.8) with six mesh densities. x, y and z are refined together, and the x-axis is λ/Δx. The targets for each mesh are in the table below.",
- "rs.mpick_h":"Chosen mesh: no. 4 (λ/Δx = 24)",
- "rs.mpick_p":"677 panels in the quarter box. Change from mesh 3 to 4, and from 4 to 5:",
- "rs.mf1":"The change from the previous mesh gets smaller at every step. From λ/Δx = 24 it is below about 1 % for a and b (heave and sway), and ζ changes by less than 0.4 % between two meshes.",
- "rs.mf2":"Mesh 4 is within about 1 % of the finest mesh (λ/Δx = 48) for heave (a +0.97 %, b −0.79 %), and slightly above 1 % for sway damping (a +0.85 %, b −1.46 %).",
+ "rs.mpick_h":"Chosen mesh: no. 5 (λ/Δx = 36)",
+ "rs.mpick_p":"1385 panels in the quarter box. Change from mesh 4 to 5, and from 5 to 6:",
+ "rs.mf1":"The change from the previous mesh gets smaller at every step. From λ/Δx = 36 it is below 1 % for a and b (heave and sway), and ζ changes by less than 0.4 % between two meshes.",
+ "rs.mf2":"Mesh 5 is within 1 % of the finest mesh (λ/Δx = 48) for both heave (a +0.42 %, b −0.32 %) and sway (a +0.41 %, b +0.65 %).",
  "rs.mf3":"All five probes move together and smoothly, so ζ does not oscillate as in the length study. All directions are refined together, so we do not know which direction drives the change. The coarsest meshes have only 1 to 2 panels over the half beam and over the draught.",
  "rs.mhl":"The row for the chosen mesh is highlighted. Δ is the change from the previous mesh in percent. Panels is the number in the quarter box."
 }
@@ -88,7 +88,7 @@ en:{
 // ---------- Mesh study ----------
 // Radene er [mesh, lambda/dx, paneler (kvartboks), a, b, zeta for 5 sondar].
 const MESH_DATA = {"heave":[[1,3,17,1.688228,0.728211,0.606492,0.554416,0.698537,0.692173,0.605409],[2,6,47,1.587705,0.745953,0.608152,0.568301,0.684131,0.679076,0.601093],[3,12,188,1.517053,0.768562,0.614672,0.580062,0.692754,0.687934,0.610953],[4,24,677,1.488714,0.78119,0.616875,0.585468,0.69742,0.692692,0.61552],[5,36,1385,1.480587,0.784929,0.617656,0.58693,0.698538,0.693838,0.616674],[6,48,2576,1.474367,0.787439,0.618396,0.588008,0.699689,0.694994,0.617653]],"sway":[[1,3,17,0.753773,0.637049,0.557777,0.510767,0.588216,0.582603,0.568334],[2,6,47,0.740487,0.561352,0.534563,0.496454,0.570102,0.565464,0.541194],[3,12,188,0.715306,0.530774,0.522576,0.48712,0.558863,0.554513,0.527561],[4,24,677,0.702171,0.51647,0.516099,0.481529,0.552503,0.548269,0.520492],[5,36,1385,0.699129,0.512321,0.514312,0.48011,0.550803,0.546603,0.518564],[6,48,2576,0.696271,0.509021,0.5128,0.478825,0.549227,0.545048,0.516953]]};
-const MCHOSEN = 4;
+const MCHOSEN = 5;
 let mdof = "heave";
 
 function renderMesh(){
@@ -96,7 +96,7 @@ function renderMesh(){
   const n = mdof==="heave" ? 3 : 2;
   document.querySelectorAll("#mdofchips .chip").forEach(c=>c.classList.toggle("on", c.dataset.d===mdof));
   const img = document.getElementById("meshimg");
-  img.src = "results/mesh_study/mesh_study_"+mdof+".png?v=8";
+  img.src = "results/mesh_study/mesh_study_"+mdof+".png?v=9";
   img.alt = SITE.t("rs.fig")+", "+mdof;
   document.getElementById("mdl").href = "results/mesh_study/mesh_study_"+mdof+"_table.csv";
   document.getElementById("mpickdev").innerHTML =
