@@ -25,7 +25,12 @@ no:{
  "gd.corner_tag":"hjørne {c}","gd.corner":"hjørne {n}","gd.of":"{a} av {b}",
  "gd.stretch":"Strekk ut tynne retningar (lange skrog blir lettare å sjå)",
  "gd.mesh_h":"Frå λ/Δ til heile panel (prosjektet)",
- "gd.mesh_intro":"Utgangspunkt: ω̂ = 0,8 og B = 6 m gir λ = πB/ω̂² = <b>{lam} m</b>. Meshregelen frå oppgåva er λ/Δx = 3, λ/Δy = 8 og λ/Δz = 8. I kvartboksen gjeld lengda <b>halve</b> L og halve B, så Nx og Ny blir talet på panel langs halve sida.",
+ "gd.mesh_intro":"Utgangspunkt: ω̂ = 0,8 og B = 6 m gir λ = πB/ω̂² = <b>{lam} m</b>. Meshregelen frå oppgåva er λ/Δx = 3, λ/Δy = 8 og λ/Δz = 8. Vi modellerer berre ein fjerdedel av boksen, så lengda som skal delast opp er L/2 i x og B/2 i y. Talet på panel er lengda delt på største lovlege panellengd, runda opp til eit heilt tal.",
+ "gd.mesh_ch":"Utrekning for L/B = {lb}:",
+ "gd.mesh_cx":"<b>x:</b> største panellengd er Δx = λ/3 = {lam}/3 = {d} m. L = {lb}·6 = {L} m og L/2 = {h} m. Då er {h}/{d} = {ex}, så <b>Nx = {N}</b>.",
+ "gd.mesh_cy":"<b>y:</b> same tankegang, men kravet er 8 panel per bølgjelengd, så Δy = λ/8 = {lam}/8 = {d} m. B/2 = 3 m, og 3/{d} = {ex}, så <b>Ny = {N}</b>.",
+ "gd.mesh_cz":"<b>z:</b> same krav som i y, Δz = λ/8 = {d} m. D = 1,5 m, og 1,5/{d} = {ex}, så <b>Nz = {N}</b>.",
+ "gd.mesh_tt":"Same utrekning i ein tabell:",
  "gd.mesh_th":["Retning","Lengd å dele opp","Mål λ/Δ","Største Δ = λ/mål","Nøyaktig N = lengd/Δ","Rundar opp til N","Faktisk Δ = lengd/N","Faktisk λ/Δ"],
  "gd.mesh_dirs":["x (halve L)","y (halve B)","z (D)"],
  "gd.mesh_note":"Generatoren rundar <b>alltid opp</b> (ceil), fordi N må vere eit heilt tal og ein avrunding nedover ville gjort panela større enn λ/mål. Opprunding gir litt mindre panel, så kravet er alltid oppfylt: faktisk λ/Δ er lik eller større enn målet. Totalt blir det {n} panel i kvartboksen ({nx}·{ny} + {nx}·{nz} + {ny}·{nz}).",
@@ -85,7 +90,12 @@ en:{
  "gd.corner_tag":"corner {c}","gd.corner":"corner {n}","gd.of":"{a} of {b}",
  "gd.stretch":"Stretch thin directions (long hulls are easier to see)",
  "gd.mesh_h":"From λ/Δ to whole panels (the project)",
- "gd.mesh_intro":"Starting point: ω̂ = 0.8 and B = 6 m give λ = πB/ω̂² = <b>{lam} m</b>. The mesh rule from the assignment is λ/Δx = 3, λ/Δy = 8 and λ/Δz = 8. In the quarter box the length is <b>half</b> of L and half of B, so Nx and Ny are the number of panels along half the side.",
+ "gd.mesh_intro":"Starting point: ω̂ = 0.8 and B = 6 m give λ = πB/ω̂² = <b>{lam} m</b>. The mesh rule from the assignment is λ/Δx = 3, λ/Δy = 8 and λ/Δz = 8. Only a quarter of the box is modelled, so the length to divide is L/2 in x and B/2 in y. The number of panels is the length divided by the largest allowed panel length, rounded up to a whole number.",
+ "gd.mesh_ch":"Calculation for L/B = {lb}:",
+ "gd.mesh_cx":"<b>x:</b> the largest panel length is Δx = λ/3 = {lam}/3 = {d} m. L = {lb}·6 = {L} m and L/2 = {h} m. Then {h}/{d} = {ex}, so <b>Nx = {N}</b>.",
+ "gd.mesh_cy":"<b>y:</b> same thinking, but the requirement is 8 panels per wavelength, so Δy = λ/8 = {lam}/8 = {d} m. B/2 = 3 m, and 3/{d} = {ex}, so <b>Ny = {N}</b>.",
+ "gd.mesh_cz":"<b>z:</b> same requirement as in y, Δz = λ/8 = {d} m. D = 1.5 m, and 1.5/{d} = {ex}, so <b>Nz = {N}</b>.",
+ "gd.mesh_tt":"The same calculation in a table:",
  "gd.mesh_th":["Direction","Length to divide","Target λ/Δ","Largest Δ = λ/target","Exact N = length/Δ","Rounded up to N","Actual Δ = length/N","Actual λ/Δ"],
  "gd.mesh_dirs":["x (half L)","y (half B)","z (D)"],
  "gd.mesh_note":"The generator <b>always rounds up</b> (ceil), because N must be a whole number and rounding down would make the panels larger than λ/target. Rounding up gives slightly smaller panels, so the requirement is always met: the actual λ/Δ is equal to or larger than the target. In total the quarter box has {n} panels ({nx}·{ny} + {nx}·{nz} + {ny}·{nz}).",
@@ -258,13 +268,18 @@ function renderMesh(){
   const B=6, Dd=1.5, L=S.lb*B, lam=Math.PI*B/(0.8*0.8);
   const fm=(x,d)=>{ const s=(+x).toFixed(d===undefined?2:d); return SITE.lang==="no"?s.replace(".",","):s; };
   const rows=[[L/2,3],[B/2,8],[Dd,8]];
-  const th=trArr("gd.mesh_th"), dn=trArr("gd.mesh_dirs"); const Ns=[];
-  let h='<p style="margin:0 0 8px">'+T("gd.mesh_intro",{lam:fm(lam)})+'</p><div style="overflow:auto"><table class="cmp"><tr>'+th.map(x=>'<th>'+x+'</th>').join("")+'</tr>';
+  const th=trArr("gd.mesh_th"), dn=trArr("gd.mesh_dirs"); const Ns=[], ks=["x","y","z"], trow=[];
   rows.forEach(([len,r],k)=>{
     const maxd=lam/r, ex=len/maxd, N=Math.max(1,Math.ceil(ex-1e-9)), d=len/N; Ns.push(N);
-    h+='<tr><th>'+dn[k]+'</th><td>'+fm(len)+' m</td><td>'+r+'</td><td>'+fm(maxd)+' m</td><td>'+fm(ex,3)+'</td><td><b>'+N+'</b></td><td>'+fm(d)+' m</td><td>'+fm(lam/d)+'</td></tr>';
+    trow.push('<tr><th>'+dn[k]+'</th><td>'+fm(len)+' m</td><td>'+r+'</td><td>'+fm(maxd)+' m</td><td>'+fm(ex,3)+'</td><td><b>'+N+'</b></td><td>'+fm(d)+' m</td><td>'+fm(lam/d)+'</td></tr>');
+    rows[k].push(maxd,ex,N);
   });
-  h+='</table></div><p class="small" style="margin:8px 0 0">'+T("gd.mesh_note",{n:Ns[0]*Ns[1]+Ns[0]*Ns[2]+Ns[1]*Ns[2],nx:Ns[0],ny:Ns[1],nz:Ns[2]})+'</p>';
+  const lbt=fm(S.lb,S.lb<1?1:0).replace(/,0$/,"");
+  const calc=rows.map(([len,r,maxd,ex,N],k)=>'<li>'+T("gd.mesh_c"+ks[k],{lam:fm(lam),lb:lbt,L:fm(L,0),h:fm(len,len%1?1:0),d:fm(maxd),ex:fm(ex,3),N:N})+'</li>').join("");
+  let h='<p style="margin:0 0 8px">'+T("gd.mesh_intro",{lam:fm(lam)})+'</p>'
+    +'<p style="margin:0 0 4px"><b>'+T("gd.mesh_ch",{lb:lbt})+'</b></p><ul style="margin:0 0 10px;padding-left:20px">'+calc+'</ul>'
+    +'<p style="margin:0 0 4px">'+T("gd.mesh_tt")+'</p><div style="overflow:auto"><table class="cmp"><tr>'+th.map(x=>'<th>'+x+'</th>').join("")+'</tr>'+trow.join("")
+    +'</table></div><p class="small" style="margin:8px 0 0">'+T("gd.mesh_note",{n:Ns[0]*Ns[1]+Ns[0]*Ns[2]+Ns[1]*Ns[2],nx:Ns[0],ny:Ns[1],nz:Ns[2]})+'</p>';
   el.innerHTML=h;
 }
 function update(){
