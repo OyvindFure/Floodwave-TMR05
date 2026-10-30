@@ -107,6 +107,44 @@ def lowfreq():
     fig.savefig(out, dpi=170)
     print("saved", out)
 
+def waves_sway():
+    """Øyvind sin hovudstudie i jag: berre bølgjehøgd (modul) ved dei fem sondane, grøn ring rundt det glatte stykket
+    ved lange bølgjer. Les config/common/results frå Øyvind sin mappe, endrar ingenting der."""
+    from matplotlib.patches import Ellipse
+    ROOT = os.path.join(COMP, "..", "Semester project Wamit_oyvind", "Semester project Wamit")
+    ROOT = os.path.abspath(ROOT)
+    sys.path.insert(0, ROOT)
+    cwd = os.getcwd(); os.chdir(ROOT)
+    try:
+        import config as c, common as cm, results as r
+        L = c.MAIN_L_OVER_B * c.B
+        oh = np.array(c.MAIN_OMEGA_HATS)
+        ys_all, index = cm.main_probe_ys(list(oh))
+        series = r.nondim_series(c.MAIN_OUT_DIR, L, oh, select=lambda j: index[j])
+        ys, labels = cm.probe_y(), cm.probe_labels()
+    finally:
+        os.chdir(cwd)
+    z = np.array([sr[2]["zeta"] for sr in series])      # (frekvensar, sondar), sway = 2
+    plabel = [lab + (rf" ({y:.1f} m)" if i < len(c.PROBE_Y_OVER_B) else r" (moves with $\lambda$)")
+              for i, (lab, y) in enumerate(zip(labels, ys))]
+    cols = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4"]
+    mk = ["o", "s", "^", "D", "v"]; ls = ["-", "-", "-", "--", "-"]
+    cc.style()
+    fig, ax = plt.subplots(figsize=(8, 5.2), constrained_layout=True)
+    for n in range(z.shape[1]):
+        ax.plot(oh, z[:, n], marker=mk[n], ls=ls[n], color=cols[n], lw=1.8, ms=5, mec=cc.SURF, mew=0.8, label=plabel[n])
+    ax.add_patch(Ellipse((0.58, 0.40), 1.3, 0.5, angle=40, fill=False, ec=GREEN, lw=2.8, zorder=6))
+    ax.add_patch(Ellipse((1.57, 1.40), 1.35, 0.45, angle=48, fill=False, ec=RED, lw=2.8, zorder=6))
+    ax.set_ylim(bottom=0); ax.set_xlim(0, oh.max() * 1.03)
+    ax.set_xlabel(r"$\hat\omega=\omega\sqrt{B/2g}$")
+    ax.set_ylabel(r"$\zeta_a/\eta_{2a}$  (modulus)")
+    ax.legend(loc="upper left", frameon=False, fontsize=9.5, title="Wave probe position (y from the centreline)", title_fontsize=9.5)
+    cc.finish_axes([ax])
+    out = os.path.join(HERE, "img", "main_waves_sway_modulus.png")
+    fig.savefig(out, dpi=170)
+    print("saved", out)
+
 if __name__ == "__main__":
     main()
     lowfreq()
+    waves_sway()

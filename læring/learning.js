@@ -18,10 +18,12 @@ no:{
  "lr.p_2b":"Òg mi tolking, ikkje testa.",
  "lr.c_2":"Hovudstudien i hiv. Dei raude ringane viser lange bølgjer (låg ω̂).",
  "lr.w_c":"Same bølgje ved ω̂ = 0,1. Boksane har lengdene frå hovudstudien, og L/λ står over kvar boks.",
- "lr.h_3":"3. Amplituden til bølgjene: hakkete kurver",
- "lr.p_3a":"Når bølgjeamplituden blir plotta mot frekvens, er kurvene hakkete. Hakka kjem frå den same forsterkinga og utsletjinga som over. Proben nærast boksen er minst hakkete. Ved låg frekvens er kurvene glatte.",
- "lr.p_3b":"Tolking frå notata mine. Eg har ikkje hatt ein reinsleg talmessig test av dette.",
- "lr.c_3":"Hovudstudien, hiv: amplitude og fase ved probane.",
+ "lr.t_c":"Sett ovanfrå, berre ei skisse (ikkje eit WAMIT-resultat). Dra i glidaren: høgare frekvens gir kortare bølgjer og fleire frontar, og meir vrøvl jo lenger ut frå bargen ein kjem. Bølgjelengda er teikna skjematisk.","lr.t_len":"Ikkje-dimensjonal frekvens","lr.t_r1":"<b>Lange bølgjer:</b> få frontar og glatte kurver.","lr.t_r2":"<b>Middels bølgjer:</b> fleire frontar, litt vrøvl lengst ute.","lr.t_r3":"<b>Korte bølgjer:</b> mange frontar og mykje vrøvl jo lenger ut frå bargen.",
+ "lr.t_smooth":"glatt","lr.t_side":"sidebølgjer","lr.t_end":"endebølgjer","lr.t_barge":"barge","lr.t_near":"lite interferens","lr.t_far":"meir interferens","lr.t_dist":"avstand frå bargen",
+ "lr.h_3":"3. Amplituden til bølgjene: glatte kurver ved lange bølgjer",
+ "lr.p_3a":"Ved lange bølgjer er kurvene glatte. Det kjem av at det er lite interferens mellom endebølgjene og sidebølgjene. Interferensen aukar med avstanden frå bargen, så ved korte bølgjer blir kurvene hakkete.",
+ "lr.p_3b":"Mi tolking, ikkje testa.",
+ "lr.c_3":"Hovudstudien i jag (Øyvind): bølgjehøgd ved dei fem probane. Grøn ring: glatt ved lange bølgjer. Raud ring: hakkete ved korte bølgjer.",
  "lr.h_4":"4. Fasen til bølgjene",
  "lr.p_4a":"Fasen er målt i forhold til oscillasjonen til boksen. Bølgja brukar tid på å reise utover, så forseinkinga aukar med avstanden. Ho aukar òg med frekvensen, sidan bølgjetalet er <b>k = 2ω̂²/B</b>, så fasen endrar seg som ω̂² gonger avstanden.",
  "lr.p_4b":"Probane som følgjer bølgjelengda (ved B/2 + λ og B/2 + 2λ) har same fase som oscillasjonen for alle frekvensar, fordi dei alltid sit eit heilt tal bølgjelengder ute.",
@@ -46,10 +48,12 @@ en:{
  "lr.p_2b":"Also my interpretation, not tested.",
  "lr.c_2":"Main study in heave. The red rings mark long waves (low ω̂).",
  "lr.w_c":"Same wave at ω̂ = 0.1. The boxes have the lengths from the main study, and L/λ is written above each box.",
- "lr.h_3":"3. Amplitude of the waves: jagged curves",
- "lr.p_3a":"When the wave amplitude is plotted against frequency, the curves are jagged. The jaggedness comes from the same amplification and cancellation as above. The probe closest to the box is the least jagged. At low frequency the curves are smooth.",
- "lr.p_3b":"Interpretation from my notes. I did not get a clean numerical test of this.",
- "lr.c_3":"Main study, heave: amplitude and phase at the probes.",
+ "lr.t_c":"Seen from above, a sketch only (not a WAMIT result). Drag the slider: a higher frequency gives shorter waves and more fronts, and more mess the further out from the barge. The wavelength is drawn schematically.","lr.t_len":"Non-dimensional frequency","lr.t_r1":"<b>Long wavelengths:</b> few fronts and smooth curves.","lr.t_r2":"<b>Medium wavelengths:</b> more fronts, a little mess far out.","lr.t_r3":"<b>Short wavelengths:</b> many fronts and a lot of mess the further out from the barge.",
+ "lr.t_smooth":"smooth","lr.t_side":"side waves","lr.t_end":"end waves","lr.t_barge":"barge","lr.t_near":"little interference","lr.t_far":"more interference","lr.t_dist":"distance from the barge",
+ "lr.h_3":"3. Amplitude of the waves: smooth curves at long wavelengths",
+ "lr.p_3a":"At long wavelengths the curves are smooth. This is because there is little interference between the end waves and the side waves. The interference grows with the distance from the barge, so at short wavelengths the curves get jagged.",
+ "lr.p_3b":"My interpretation, not tested.",
+ "lr.c_3":"Main study in sway (Øyvind): wave height at the five probes. Green ring: smooth at long wavelengths. Red ring: jagged at short wavelengths.",
  "lr.h_4":"4. Phase of the waves",
  "lr.p_4a":"The phase is measured relative to the oscillation of the box. The wave takes time to travel out, so the delay grows with distance. It also grows with frequency, since the wave number is <b>k = 2ω̂²/B</b>, so the phase changes like ω̂² times distance.",
  "lr.p_4b":"The probes that follow the wavelength (at B/2 + λ and B/2 + 2λ) keep the same phase as the oscillation for every frequency, because they always sit a whole number of wavelengths out.",
@@ -119,4 +123,62 @@ function four(){
   window.addEventListener("themechange", draw);
   draw();
 }
-SITE.start(function(){ barge(); four(); });
+
+function topView(){
+  const svg = document.getElementById("topSvg"), sl = document.getElementById("tL");
+  if(!svg || !sl) return;
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const CX = 490, L = 340, W = 44, YT = 290, TOPY = 28;
+  const xl = CX - L/2, xr = CX + L/2;
+  // ein bølgjefront i avstand d frå bargen: venstre bue, rett stykke, høgre bue. Punkt med normal (nx,ny).
+  function front(d, amp, lam, ph){
+    const arc = Math.PI/2*d, tot = 2*arc + L, pts = [];
+    const n = 140;
+    for(let i = 0; i <= n; i++){
+      const sI = tot*i/n; let x, y, nx, ny;
+      if(sI < arc){ const t = Math.PI/2*(sI/arc); x = xl - d*Math.cos(t); y = YT - d*Math.sin(t); nx = -Math.cos(t); ny = -Math.sin(t); }
+      else if(sI <= arc + L){ x = xl + (sI-arc); y = YT - d; nx = 0; ny = -1; }
+      else { const t = Math.PI/2*((sI-arc-L)/arc); x = xr + d*Math.sin(t); y = YT - d + d*(1-Math.cos(t)); nx = Math.sin(t); ny = -Math.cos(t); }
+      const w = amp*Math.sin(2*Math.PI*sI/lam + ph);
+      pts.push([x + nx*w, y + ny*w, sI < arc ? 0 : (sI <= arc+L ? 1 : 2)]);
+    }
+    return pts;
+  }
+  function draw(){
+    const w = parseFloat(sl.value), lam = 153*Math.pow(0.1/w, 0.55);   // skisse: kortare bølgje når ω̂ aukar
+    document.getElementById("tOut").textContent = w.toFixed(2);
+    document.getElementById("tRead").innerHTML = SITE.t(w <= 0.6 ? "lr.t_r1" : (w <= 1.1 ? "lr.t_r2" : "lr.t_r3"));
+    const ink = css("--ink"), muted = css("--muted"), sea = css("--accent"), badc = css("--badc");
+    const N = Math.floor((YT - TOPY)/lam);
+    let s = '';
+    for(let k = 1; k <= N; k++){
+      const d = k*lam, op = Math.max(0.35, 1 - 0.05*k);
+      // vrøvl aukar med kor mange bølgjelengder ein er ute frå bargen (skisse, ikkje utrekna)
+      const amp = Math.min(0.20*lam, 0.9*Math.pow(Math.max(0, k-1.5), 1.4)*lam/20);
+      const pts = front(d, amp, 0.9*lam + 6, k*1.7);
+      [[0,sea],[1,ink],[2,sea]].forEach(([seg,col]) => {
+        const p = pts.filter(q => q[2] === seg || (seg === 1 && false));
+        // ta med nabopunkt så segmenta heng saman
+        const idx = pts.map((q,i)=>q[2]===seg?i:-1).filter(i=>i>=0);
+        const i0 = Math.max(0, idx[0]-1), i1 = Math.min(pts.length-1, idx[idx.length-1]+1);
+        const path = pts.slice(i0, i1+1).map(q => q[0].toFixed(1)+","+q[1].toFixed(1)).join(" ");
+        s += '<polyline points="'+path+'" fill="none" stroke="'+col+'" stroke-width="'+(seg===1?3.6:2.8)+'" stroke-linejoin="round" opacity="'+op+'"/>';
+      });
+    }
+    s += '<rect x="'+xl+'" y="'+YT+'" width="'+L+'" height="'+W+'" rx="3" fill="'+ink+'" fill-opacity=".12" stroke="'+ink+'" stroke-width="2.5"/>'+
+         '<text x="'+CX+'" y="'+(YT+W/2+5)+'" font-size="14" text-anchor="middle" fill="'+ink+'">'+SITE.t("lr.t_barge")+'</text>';
+    if(N >= 1) s += '<text x="'+CX+'" y="'+(YT-lam-10)+'" font-size="13" text-anchor="middle" fill="'+ink+'">'+SITE.t("lr.t_side")+'</text>'+
+         '<text x="'+(xr+lam*0.78+10)+'" y="'+(YT-lam*0.78-6)+'" font-size="13" fill="'+sea+'">'+SITE.t("lr.t_end")+'</text>';
+    s += '<g fill="'+muted+'" stroke="'+muted+'" font-size="13">'+
+         '<line x1="24" y1="'+(YT-8)+'" x2="24" y2="30" stroke-width="1.5"/><polygon points="24,22 19,34 29,34" stroke="none"/>'+
+         '<text x="36" y="'+(YT-14)+'" stroke="none">'+SITE.t("lr.t_near")+'</text>'+
+         '<text x="36" y="42" stroke="none">'+SITE.t("lr.t_far")+'</text>'+
+         '<text x="36" y="110" stroke="none" font-size="12">'+SITE.t("lr.t_dist")+'</text></g>';
+    svg.innerHTML = s;
+  }
+  sl.addEventListener("input", draw);
+  window.addEventListener("themechange", draw);
+  SITE.onLang(draw);
+  draw();
+}
+SITE.start(function(){ barge(); four(); topView(); });
