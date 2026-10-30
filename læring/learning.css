@@ -6,3 +6,10 @@
 figure{margin:10px 0 0}
 figure img{width:100%;height:auto;display:block;background:#fff;border-radius:8px}
 figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+h3{font-size:15px;margin:16px 0 4px}
+.barge{margin-top:6px;background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:10px}
+#bargeSvg{width:100%;height:auto;display:block}
+.bctl{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+.bctl input{width:100%}
+.bread{margin-top:6px;font-size:14px;min-height:2.6em}
+.bread .ok{color:var(--good);font-weight:600}.bread .bad{color:var(--badc);font-weight:600}
