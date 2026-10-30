@@ -9,6 +9,7 @@ Statisk nettstad utan bygging. Opne `index.html` i nettlesaren, eller publiser m
 - `gdf.html`: .gdf-fila forklart linje for linje mot Box_generator.py (3D-modell av kvart panel)
 - `overview.html`: oversikt over korleis WAMIT-oppsettet køyrer, frå config.py til rapport
 - `nondim.html`: kvifor vi bruker ikkje-dimensjonal frekvens (ω̂), med fire bokser i bølgjer
+- `læring/`: side med det eg lærte i prosjektet (`index.html`, `learning.js`, `learning.css`, bilete i `img/`)
 - `assets/site.js`: meny, språkval (NO/EN), lys/mørk modus og forsidekort
 - `assets/site.css`: felles stil
 - `assets/box-generator.js` og `assets/box.css`: alt som høyrer til box generator-sida

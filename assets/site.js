@@ -3,12 +3,16 @@
 (function(){
 "use strict";
 
+// rotmappa til nettstaden (så menyen òg verkar frå undermapper som læring/)
+const ROOT = (document.currentScript && document.currentScript.getAttribute("src") || "assets/site.js").replace(/assets\/site\.js.*$/,"");
+
 const PAGES = [
   { key:"ov", href:"overview.html" },
   { key:"box", href:"box-generator.html" },
   { key:"gdf", href:"gdf.html" },
   { key:"nd", href:"nondim.html" },
-  { key:"res", href:"results.html" }
+  { key:"res", href:"results.html" },
+  { key:"lr", href:"læring/index.html" }
 ];
 
 const TR = {
@@ -20,6 +24,9 @@ const TR = {
     "nav.ov":"Oversikt",
     "nav.nd":"Frekvens",
     "nav.res":"Results",
+    "nav.lr":"Læring",
+    "card.lr.t":"Det eg lærte",
+    "card.lr.d":"Fire ting som vart tydelege mot slutten av prosjektet: overshoot, 3D-effektar, amplitude og fase til bølgjene.",
     "card.res.t":"Results",
     "card.res.d":"Resultat frå studiane: lengdestudien med figurar, tabellar og valt lengd. Meshstudien kjem etter kvart.",
     "card.nd.t":"Kvifor ikkje-dimensjonal frekvens?",
@@ -47,6 +54,9 @@ const TR = {
     "nav.gdf":"GDF file",
     "nav.ov":"Overview",
     "nav.nd":"Frequency",
+    "nav.lr":"Learning",
+    "card.lr.t":"What I learned",
+    "card.lr.d":"Four things that became clear late in the project: overshoot, 3D effects, and the amplitude and phase of the waves.",
     "nav.res":"Results",
     "card.res.t":"Results",
     "card.res.d":"Results from the studies: the length study with figures, tables and the chosen length. The mesh study will follow.",
@@ -121,17 +131,19 @@ function toggleTheme(){
 }
 
 function here(href){
-  const p = location.pathname.split("/").pop() || "index.html";
-  return p===href;
+  let p = decodeURIComponent(location.pathname);
+  if(p.endsWith("/")) p += "index.html";
+  return p.endsWith("/"+href) || (href==="index.html" && p.endsWith("/index.html") && !p.endsWith("/læring/index.html"));
 }
 
 function buildHeader(){
   const h = document.getElementById("site-header"); if(!h) return;
   const links = [{href:"index.html", label:t("nav.home")}].concat(PAGES.map(p=>({href:p.href, label:t("nav."+p.key)})));
+  const url = h2 => ROOT + encodeURI(h2);
   h.innerHTML =
     '<div class="bar">'+
-      '<a class="brand" href="index.html"><b>Flood wave</b><span>'+t("brand.sub")+'</span></a>'+
-      '<nav>'+links.map(l=>'<a href="'+l.href+'"'+(here(l.href)?' class="active"':'')+'>'+l.label+'</a>').join("")+'</nav>'+
+      '<a class="brand" href="'+url("index.html")+'"><b>Flood wave</b><span>'+t("brand.sub")+'</span></a>'+
+      '<nav>'+links.map(l=>'<a href="'+url(l.href)+'"'+(here(l.href)?' class="active"':'')+'>'+l.label+'</a>').join("")+'</nav>'+
       '<div class="tools">'+
         '<div class="seg" role="group" aria-label="'+t("tool.lang")+'"><button type="button" data-lang="no">NO</button><button type="button" data-lang="en">EN</button></div>'+
         '<button type="button" id="themeBtn" aria-label="'+t("tool.theme")+'" title="'+t("tool.theme")+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>'+
@@ -147,7 +159,7 @@ function buildFooter(){
 function buildCards(){
   const box = document.getElementById("cards"); if(!box) return;
   box.innerHTML = PAGES.map(p=>
-    '<a class="pcard" href="'+p.href+'"><h2>'+t("card."+p.key+".t")+'</h2><p>'+t("card."+p.key+".d")+'</p><span class="go">'+t("card.open")+'</span></a>'
+    '<a class="pcard" href="'+ROOT+encodeURI(p.href)+'"><h2>'+t("card."+p.key+".t")+'</h2><p>'+t("card."+p.key+".d")+'</p><span class="go">'+t("card.open")+'</span></a>'
   ).join("") + '<div class="pcard soon"><h2>'+t("card.soon.t")+'</h2><p>'+t("card.soon.d")+'</p></div>';
 }
 

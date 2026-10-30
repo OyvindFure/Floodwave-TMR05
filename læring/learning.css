@@ -1,0 +1,8 @@
+.sub{color:var(--muted);margin:0 0 14px;max-width:80ch}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:14px}
+.card h2{font-size:17px;margin:0 0 8px}
+.card p{max-width:80ch;margin:0 0 8px}
+.small{font-size:13px;color:var(--muted)}
+figure{margin:10px 0 0}
+figure img{width:100%;height:auto;display:block;background:#fff;border-radius:8px}
+figcaption{font-size:13px;color:var(--muted);margin-top:6px}
