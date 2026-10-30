@@ -14,8 +14,10 @@ no:{
  "lr.b_one":"<span class='bad'>L/λ ≈ 1: utsleting</span> (mi tolking, ikkje testa). Her ligg dalen i kurvene.",
  "lr.b_none":"Mellom dei to ser vi ikkje noko spesielt. Prøv L/λ = 0,5 og 1.",
  "lr.h_2":"2. 3D-effektane forsvinn for ein lang boks",
- "lr.p_2a":"Jo kortare skipet er i forhold til bølgjelengda, jo fleire 3D-effektar får vi. Dette er bølgjene som kjem frå endane av boksen. Ved låg frekvens er bølgjelengda lang, så boksen er kort i forhold til henne, og 3D-effektane er store. Gjer vi boksen lengre, betyr dei mindre og mindre.",
+ "lr.p_2a":"Jo lengre boksen er, jo mindre hakk får vi på a33 og b33 (ikkje-dimensjonale) ved låg frekvens og lange bølgjelengder. Når bølgja er lang og boksen kort, klarer vi ikkje å gjere resultatet ikkje-dimensjonalt, fordi for mange 3D-effektar spelar inn.",
  "lr.p_2b":"Òg mi tolking, ikkje testa.",
+ "lr.c_2":"Hovudstudien i hiv. Dei raude ringane viser lange bølgjer (låg ω̂).",
+ "lr.w_c":"Same bølgje ved ω̂ = 0,1. Boksane har lengdene frå hovudstudien, og L/λ står over kvar boks.",
  "lr.h_3":"3. Amplituden til bølgjene: hakkete kurver",
  "lr.p_3a":"Når bølgjeamplituden blir plotta mot frekvens, er kurvene hakkete. Hakka kjem frå den same forsterkinga og utsletjinga som over. Proben nærast boksen er minst hakkete. Ved låg frekvens er kurvene glatte.",
  "lr.p_3b":"Tolking frå notata mine. Eg har ikkje hatt ein reinsleg talmessig test av dette.",
@@ -40,8 +42,10 @@ en:{
  "lr.b_one":"<span class='bad'>L/λ ≈ 1: cancellation</span> (my interpretation, not tested). This is where the dip in the curves is.",
  "lr.b_none":"In between we see nothing special. Try L/λ = 0.5 and 1.",
  "lr.h_2":"2. The 3D effects fade for a long box",
- "lr.p_2a":"The shorter the ship is compared with the wavelength, the more 3D effects we get. These are the waves coming from the ends of the box. At low frequency the wavelength is long, so the box is short relative to it, and the 3D effects are large. Make the box longer, and they matter less and less.",
+ "lr.p_2a":"The longer the box, the less jagged a33 and b33 (non-dimensional) get at low frequency and long wavelengths. When the wave is long and the box is short, we cannot make the result non-dimensional, because too many 3D effects come into play.",
  "lr.p_2b":"Also my interpretation, not tested.",
+ "lr.c_2":"Main study in heave. The red rings mark long waves (low ω̂).",
+ "lr.w_c":"Same wave at ω̂ = 0.1. The boxes have the lengths from the main study, and L/λ is written above each box.",
  "lr.h_3":"3. Amplitude of the waves: jagged curves",
  "lr.p_3a":"When the wave amplitude is plotted against frequency, the curves are jagged. The jaggedness comes from the same amplification and cancellation as above. The probe closest to the box is the least jagged. At low frequency the curves are smooth.",
  "lr.p_3b":"Interpretation from my notes. I did not get a clean numerical test of this.",
@@ -90,4 +94,29 @@ function barge(){
   SITE.onLang(draw);
   draw();
 }
-SITE.start(barge);
+
+function four(){
+  const svg = document.getElementById("fourSvg");
+  if(!svg) return;
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const M = [["Cecilie",48,"#2a78d6"],["Zhijun",32,"#1baf7a"],["Øyvind",24,"#eb6834"],["Anders",20,"#eda100"]];
+  const LAM = 620, AMP = 18, CX = 450;
+  function draw(){
+    const w = 0.1;
+    const ink = css("--ink"), muted = css("--muted"), sea = css("--accent");
+    let s = "";
+    M.forEach((m, k) => {
+      const yc = 45 + k*84, r = m[1]*w*w/Math.PI, bw = r*LAM;
+      let pts = [];
+      for(let x = 10; x <= 890; x += 4) pts.push(x+","+(yc + AMP*Math.cos(2*Math.PI*(x-CX)/LAM)).toFixed(1));
+      s += '<polyline points="'+pts.join(" ")+'" fill="none" stroke="'+sea+'" stroke-width="2.2"/>'+
+           '<rect x="'+(CX-bw/2)+'" y="'+(yc+AMP-13)+'" width="'+bw+'" height="26" rx="2" fill="'+m[2]+'" fill-opacity=".22" stroke="'+m[2]+'" stroke-width="2.5"/>'+
+           '<text x="14" y="'+(yc-26)+'" font-size="15" font-weight="600" fill="'+ink+'">'+m[0]+'</text>'+
+           '<text x="'+(CX)+'" y="'+(yc-26)+'" font-size="14" text-anchor="middle" fill="'+muted+'">L/λ = '+r.toFixed(2)+'</text>';
+    });
+    svg.innerHTML = s;
+  }
+  window.addEventListener("themechange", draw);
+  draw();
+}
+SITE.start(function(){ barge(); four(); });

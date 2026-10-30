@@ -71,5 +71,42 @@ def main(dof=2):
     fig.savefig(out, dpi=170)
     print("saved", out)
 
+def main_series(p, dof=3):
+    L = p["LB"] * p["B"]
+    d = cc.parse_case1_multi(f"{p['path']}/main_study/case.1")
+    scale = math.sqrt(p["B"] / (2 * cc.G))
+    ws, bs, as_ = [], [], []
+    for T in sorted(d, reverse=True):
+        om = 2 * math.pi / T
+        A, Bd = d[T][(dof, dof)]
+        a, b = cc.nondim(A, Bd, om, p["B"], L)
+        ws.append(om * scale); as_.append(a); bs.append(b)
+    return np.array(ws), np.array(bs), np.array(as_)
+
+def lowfreq():
+    """hovudstudien i hiv, alle fire, med raud ellipse rundt dei lange bølgjelengdene (låg frekvens)"""
+    from matplotlib.patches import Ellipse
+    cc.style()
+    fig, ax = plt.subplots(2, 1, figsize=(9, 8), sharex=True, constrained_layout=True)
+    for name, p in cc.PEOPLE.items():
+        w, b, a = main_series(p)
+        for a_, y in zip(ax, (b, a)):
+            a_.plot(w, y, "-o", color=p["color"], lw=2, ms=4.5, markeredgecolor=cc.SURF, markeredgewidth=1.2,
+                    label=rf"{name}: $B={p['B']:g}$ m, $L/B={p['LB']}$", zorder=3)
+        lam = math.pi * p["B"] / w**2; ll = p["LB"] * p["B"] / lam
+        for k in (0, 1, 2):
+            print(name, "w=%.2f" % w[k], "L/lambda=%.3f" % ll[k], "b33=%.3f" % b[k], "a33=%.3f" % a[k])
+    ax[0].add_patch(Ellipse((0.2, 0.47), 0.26, 1.0, fill=False, ec=RED, lw=2.4, zorder=6))
+    ax[1].add_patch(Ellipse((0.2, 4.2), 0.26, 6.2, fill=False, ec=RED, lw=2.4, zorder=6))
+    ax[0].set_ylabel(r"$b_{33}/(\rho\nabla)\,\sqrt{B/2g}$")
+    ax[1].set_ylabel(r"$a_{33}/(\rho\nabla)$")
+    ax[1].set_xlabel(r"$\hat\omega=\omega\sqrt{B/2g}$")
+    ax[0].legend(loc="upper right", frameon=False, fontsize=10.5)
+    cc.finish_axes(ax)
+    out = os.path.join(HERE, "img", "main_lowfreq_heave.png")
+    fig.savefig(out, dpi=170)
+    print("saved", out)
+
 if __name__ == "__main__":
     main()
+    lowfreq()
